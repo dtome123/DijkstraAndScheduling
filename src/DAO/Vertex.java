@@ -4,9 +4,17 @@ public class Vertex {
 
 	final private String id;
     final private String name;
-
-
-    public Vertex(String id, String name) {
+    public int x;
+    public int y;
+    
+    public Vertex() {
+    	this.x=-1;
+    	this.y=-1;
+		this.id = "";
+		this.name = "";
+    }
+    
+	public Vertex(String id, String name) {
         this.id = id;
         this.name = name;
     }

@@ -45,10 +45,8 @@ public class TestDijkstraAlgorithm {
         DijkstraAlgorithm dijkstra = new DijkstraAlgorithm(graph);
         dijkstra.execute(nodes.get(0));
         LinkedList<Vertex> path = dijkstra.getPath(nodes.get(7));
-
         assertNotNull(path);
         assertTrue(path.size() > 0);
-
         for (Vertex vertex : path) {
             System.out.println(vertex);
         }

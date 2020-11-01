@@ -1,12 +1,17 @@
 package Bus;
 
+import java.util.LinkedList;
+
+import DAO.Vertex;
+
 public class Main {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		TestDijkstraAlgorithm test = new TestDijkstraAlgorithm();
-		test.testExcute();
-
+		ExecuteDijkstra ex = new ExecuteDijkstra();
+		LinkedList<Vertex> nodes = ex.handle(3, 10);
+		for(Vertex v: nodes) {
+			System.out.println(v);
+		}
 	}
 
 }
