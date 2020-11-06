@@ -1,4 +1,4 @@
-package UI;
+package Client.UI;
 
 import javax.swing.JPanel;
 
@@ -40,16 +40,11 @@ public class Panneau extends JPanel {
     Hashtable<Vertex,Ellipse2D > vertexToNode = new Hashtable<>();
     Hashtable<Ellipse2D, Boolean> isPath = new Hashtable<Ellipse2D, Boolean>();
     
-    
-    
-    
 	List<Vertex> vertexs = new ArrayList<Vertex>();
 	ExecuteDijkstra ex = new ExecuteDijkstra();
 	
-	
 	private void init() {
 		String flagId = "";
-		
 		vertexs = ex.getVertexs();
 		vertexs.get(0).x=100;
 		vertexs.get(0).y=100;
@@ -70,8 +65,7 @@ public class Panneau extends JPanel {
 			if(isDestination.get(sou)==false) {
 				sou.x=xSou;
 				sou.y=ySou;
-				xSou=xSou+200;
-				
+				xSou=xSou+100;
 			}
 			if(flagId.equals(sou.getId())) {
 				k+=50;
@@ -79,7 +73,6 @@ public class Panneau extends JPanel {
 			else {
 				k=0;
 			}
-			
 			des.x=sou.x+k;
 			des.y=sou.y+100+k+10;
 			flagId=sou.getId();
@@ -210,11 +203,8 @@ public class Panneau extends JPanel {
     	LinkedList<Vertex> path = ex.handle(0, 7);
 		for (int i = 1; i < path.size(); i++) {
 			g2d.setPaint(Color.red);
-
 			Vertex sou = path.get(i - 1);
 			Vertex des = path.get(i);
-			
-			
 			Ellipse2D node_begin =vertexToNode.get(sou);
 			Ellipse2D node_end =vertexToNode.get(des);
             Point from = node_begin.getBounds().getLocation();
@@ -261,8 +251,6 @@ public class Panneau extends JPanel {
                 g2d.draw(node);
                 
             }
-            
-            
             //text=nodeToVertex.get(node).getId();
             FontMetrics fm = g.getFontMetrics();
             text=nodeToVertex.get(node).getId();
@@ -271,10 +259,14 @@ public class Panneau extends JPanel {
             int y = node.getBounds().y;
             int width = node.getBounds().width;
             int height = node.getBounds().height;
+            
             //System.out.println(nodeToVertex.get(node).getId());
-            g.drawString(text,
-            				x + ((width - textWidth)) / 2,
-                            y + ((height - fm.getHeight()) / 2) + fm.getAscent());
+            if(isPath.containsKey(node)==true) {
+            	g.setColor(Color.white);
+            }
+            else
+            	g.setColor(Color.black);
+            g.drawString(text,x + ((width - textWidth)) / 2,y + ((height - fm.getHeight()) / 2) + fm.getAscent());
 
         }
         

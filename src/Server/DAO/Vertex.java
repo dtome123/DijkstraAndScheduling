@@ -1,9 +1,8 @@
-package DAO;
+package Server.DAO;
 
 public class Vertex {
 
 	final private String id;
-    final private String name;
     public int x;
     public int y;
     
@@ -11,20 +10,16 @@ public class Vertex {
     	this.x=-1;
     	this.y=-1;
 		this.id = "";
-		this.name = "";
     }
     
-	public Vertex(String id, String name) {
+	public Vertex(String id) {
         this.id = id;
-        this.name = name;
+        
     }
     public String getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
 
     @Override
     public int hashCode() {
@@ -53,7 +48,7 @@ public class Vertex {
 
     @Override
     public String toString() {
-        return name;
+        return id;
     }
 
 }

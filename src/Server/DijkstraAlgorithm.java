@@ -1,4 +1,4 @@
-package Bus;
+package Server;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import DAO.Edge;
-import DAO.Graph;
-import DAO.Vertex;
+import Server.DAO.Edge;
+import Server.DAO.Graph;
+import Server.DAO.Vertex;
 
 public class DijkstraAlgorithm {
 

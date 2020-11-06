@@ -1,4 +1,4 @@
-package Bus;
+package Server;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import DAO.Edge;
-import DAO.Graph;
-import DAO.Vertex;
+import Server.DAO.Edge;
+import Server.DAO.Graph;
+import Server.DAO.Vertex;
 
 public class ExecuteDijkstra {
 
@@ -35,23 +35,21 @@ public class ExecuteDijkstra {
     	vertexs = new ArrayList<Vertex>();
         edges = new ArrayList<Edge>();
     	for (int i = 0; i < 11; i++) {
-            Vertex location = new Vertex( i+"", i+"");
+            Vertex location = new Vertex( i+"");
             vertexs.add(location);
         }
-    	addLane("Edge_0", 0, 1, 85);
-        addLane("Edge_1", 0, 2, 217);
-        addLane("Edge_2", 0, 4, 173);
-        addLane("Edge_11",1, 10, 600);
-        addLane("Edge_3", 2, 6, 186);
-        addLane("Edge_4", 2, 7, 103);
-        addLane("Edge_5", 3, 7, 183);
-        addLane("Edge_9", 4, 9, 502);
-        addLane("Edge_6", 5, 8, 250);
-        addLane("Edge_8", 7, 9, 167);
-        addLane("Edge_7", 8, 9, 84);
-        addLane("Edge_10", 9, 10, 40);
-        
-
+    	addLane( 0, 1, 85);
+        addLane( 0, 2, 217);
+        addLane( 0, 4, 173);
+        addLane( 1, 10,600);
+        addLane( 2, 6, 186);
+        addLane( 2, 7, 103);
+        addLane( 3, 7, 183);
+        addLane( 4, 9, 502);
+        addLane( 5, 8, 250);
+        addLane( 7, 9, 167);
+        addLane( 8, 9, 84);
+        addLane( 9, 10, 40);
     }
     public LinkedList<Vertex> handle(int node_begin,int node_end) {
         
@@ -66,8 +64,8 @@ public class ExecuteDijkstra {
         return path;
 
     }
-    private void addLane(String laneId, int sourceLocNo, int destLocNo,int duration) {
-        Edge lane = new Edge(laneId,vertexs.get(sourceLocNo), vertexs.get(destLocNo), duration );
+    private void addLane( int sourceLocNo, int destLocNo,int duration) {
+        Edge lane = new Edge(vertexs.get(sourceLocNo), vertexs.get(destLocNo), duration );
         edges.add(lane);
     }
 
