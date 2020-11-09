@@ -1,9 +1,11 @@
 package Client.UI;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import org.junit.jupiter.api.Timeout;
 
+import Client.InitData;
 import Server.ExecuteDijkstra;
 import Server.DAO.Edge;
 import Server.DAO.Vertex;
@@ -19,6 +21,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.LinkedList;
@@ -35,54 +39,26 @@ public class Panneau extends JPanel {
     private Vertex vertexCurrent;
     Graphics2D g2d;
     // bien du lieu
-    Hashtable<Vertex, Boolean> isDestination = new Hashtable<>();
+    
     Hashtable<Ellipse2D,Vertex > nodeToVertex = new Hashtable<>();
     Hashtable<Vertex,Ellipse2D > vertexToNode = new Hashtable<>();
     Hashtable<Ellipse2D, Boolean> isPath = new Hashtable<Ellipse2D, Boolean>();
     
 	List<Vertex> vertexs = new ArrayList<Vertex>();
-	ExecuteDijkstra ex = new ExecuteDijkstra();
+	List<Edge> edges = new ArrayList<Edge>();
+	
+	
+	ExecuteDijkstra ex ;
+	InitData data = new InitData();
 	
 	private void init() {
-		String flagId = "";
-		vertexs = ex.getVertexs();
-		vertexs.get(0).x=100;
-		vertexs.get(0).y=100;
-		int k=0;
-		for(Vertex v :vertexs) {
-			isDestination.put(v, false);
-		}
-		for (Edge e : ex.getEdges()){
-			Vertex des = e.getDestination();
-			isDestination.put(des, true);
-		}
-		//khoi tao diem source
-		int xSou=100;
-		int ySou=100;
-		for (Edge e : ex.getEdges()) {
-			Vertex sou = e.getSource();
-			Vertex des = e.getDestination();
-			if(isDestination.get(sou)==false) {
-				sou.x=xSou;
-				sou.y=ySou;
-				xSou=xSou+100;
-			}
-			if(flagId.equals(sou.getId())) {
-				k+=50;
-			}
-			else {
-				k=0;
-			}
-			des.x=sou.x+k;
-			des.y=sou.y+100+k+10;
-			flagId=sou.getId();
-			
-		}
-//		for(Vertex v : vertexs) {
-//			System.out.println("Node "+v.getId()+": ("+v.x+","+v.y+")");
-//		}
+		
+		vertexs = data.getVertexs();
+		edges = data.getEdges();
+		ex = new ExecuteDijkstra(vertexs, edges);
 	}
 
+	
     public Panneau() {
         nodes = new ArrayList<>(25);
 
@@ -179,7 +155,7 @@ public class Panneau extends JPanel {
 		 * 
 		 * }
 		 */
-    	for (Edge e : ex.getEdges()) {
+    	for (Edge e : edges) {
 			// System.out.println(e.getSource()+"_"+e.getDestination());
 
 			Vertex sou = e.getSource();
@@ -199,8 +175,13 @@ public class Panneau extends JPanel {
             g2d.drawString(String.valueOf(e.getWeight()), (from.x+to.x)/2,(from.y+to.y)/2);
 		}
     	
+    }
+    
+    public void drawPathDijkstra(int node_source, int node_destination) {
     	Point p = null;
-    	LinkedList<Vertex> path = ex.handle(0, 7);
+    	LinkedList<Vertex> path = ex.Execute(1, 10);
+    	
+    	System.out.println(path);
 		for (int i = 1; i < path.size(); i++) {
 			g2d.setPaint(Color.red);
 			Vertex sou = path.get(i - 1);
@@ -218,28 +199,9 @@ public class Panneau extends JPanel {
             g2d.draw(new Line2D.Float(from, to));
             
 		}
-    	
-    	
     }
-    @Override
-    public Dimension getPreferredSize() {
-        return new Dimension(400, 400);
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        // declaration
-        super.paintComponent(g);
-
-        g2d = (Graphics2D) g.create();
-        // Draw the connecting lines first
-        // This ensures that the lines are under the nodes...
-        drawLines();
-        
-        // Draw the nodes...
-        
-        for (Ellipse2D node : nodes) {
-        	
+    public void drawNodes(Graphics g) {
+    	for (Ellipse2D node : nodes) {
         	g2d.setColor(Color.yellow);
             if(isPath.containsKey(node)==true) {
             	g2d.setColor(Color.red);
@@ -271,6 +233,29 @@ public class Panneau extends JPanel {
         }
         
         g2d.dispose();
+    }
+    @Override
+    public Dimension getPreferredSize() {
+        return new Dimension(400, 400);
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        // declaration
+        super.paintComponent(g);
+
+        g2d = (Graphics2D) g.create();
+        // Draw the connecting lines first
+        // This ensures that the lines are under the nodes...
+        drawLines();
+        
+        drawPathDijkstra(1, 9);
+        
+        // Draw the nodes...
+        
+        drawNodes(g);
+        
+        
 
     }
 

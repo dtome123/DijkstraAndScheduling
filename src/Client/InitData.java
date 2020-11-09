@@ -1,6 +1,7 @@
 package Client;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import Server.DAO.Edge;
@@ -9,6 +10,13 @@ import Server.DAO.Vertex;
 public class InitData {
 	private List<Vertex> vertexs;
 	private List<Edge> edges;
+	Hashtable<Vertex, Boolean> isDestination = new Hashtable<>();
+	
+	public InitData() {
+		readFile();
+		initCoordinate();
+	}
+	
     public List<Vertex> getVertexs() {
 		return vertexs;
 	}
@@ -21,6 +29,7 @@ public class InitData {
 	public void setEdges(List<Edge> edges) {
 		this.edges = edges;
 	}
+	
 	public void readFile() {
 		vertexs = new ArrayList<Vertex>();
         edges = new ArrayList<Edge>();
@@ -40,6 +49,40 @@ public class InitData {
         addLane( 7, 9, 167);
         addLane( 8, 9, 84);
         addLane( 9, 10, 40);
+	}
+	private void initCoordinate() {
+		String flagId = "";
+		vertexs.get(0).x=100;
+		vertexs.get(0).y=100;
+		int k=0;
+		for(Vertex v :vertexs) {
+			isDestination.put(v, false);
+		}
+		for (Edge e : edges){
+			Vertex des = e.getDestination();
+			isDestination.put(des, true);
+		}
+		int xSou=100;
+		int ySou=100;
+		for (Edge e : edges) {
+			Vertex sou = e.getSource();
+			Vertex des = e.getDestination();
+			if(isDestination.get(sou)==false) {
+				sou.x=xSou;
+				sou.y=ySou;
+				xSou=xSou+100;
+			}
+			if(flagId.equals(sou.getId())) {
+				k+=50;
+			}
+			else {
+				k=0;
+			}
+			des.x=sou.x+k;
+			des.y=sou.y+100+k+10;
+			flagId=sou.getId();
+			
+		}
 	}
 	private void addLane( int sourceLocNo, int destLocNo,int duration) {
         Edge lane = new Edge(vertexs.get(sourceLocNo), vertexs.get(destLocNo), duration );

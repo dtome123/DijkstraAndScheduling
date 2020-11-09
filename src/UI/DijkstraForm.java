@@ -16,8 +16,8 @@ public class DijkstraForm extends JFrame {
 	 */
 	private void initUI() {
         
-		JPanel demo = new Panneau();
-        add(demo);
+		//JPanel demo = new Panneau();
+        //add(demo);
         
         setTitle("Basic shapes");
         setSize(1050, 550);
