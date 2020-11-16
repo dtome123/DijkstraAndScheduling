@@ -1,6 +1,8 @@
 package Server.DAO;
 
-public class Edge {
+import java.io.Serializable;
+
+public class Edge implements Serializable{
     private final Vertex source;
     private final Vertex destination;
     private final int weight;

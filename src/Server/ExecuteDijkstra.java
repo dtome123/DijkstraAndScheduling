@@ -52,8 +52,7 @@ public class ExecuteDijkstra {
 
     }
 
-    private void addLane( int sourceLocNo, int destLocNo,
-            int duration) {
+    private void addLane( int sourceLocNo, int destLocNo,int duration) {
     	
         Edge lane = new Edge(nodes.get(sourceLocNo), nodes.get(destLocNo), duration );
         edges.add(lane);

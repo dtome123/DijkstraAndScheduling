@@ -1,8 +1,12 @@
 package Client;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Scanner;
+import java.util.StringTokenizer;
 
 import Server.DAO.Edge;
 import Server.DAO.Vertex;
@@ -11,7 +15,7 @@ public class InitData {
 	private List<Vertex> vertexs;
 	private List<Edge> edges;
 	Hashtable<Vertex, Boolean> isDestination = new Hashtable<>();
-	
+	private String fileName = "src\\Client\\data.txt";
 	public InitData() {
 		readFile();
 		initCoordinate();
@@ -33,6 +37,9 @@ public class InitData {
 	public void readFile() {
 		vertexs = new ArrayList<Vertex>();
         edges = new ArrayList<Edge>();
+        
+		
+		
     	for (int i = 0; i < 11; i++) {
             Vertex location = new Vertex( i+"");
             vertexs.add(location);
@@ -49,6 +56,7 @@ public class InitData {
         addLane( 7, 9, 167);
         addLane( 8, 9, 84);
         addLane( 9, 10, 40);
+		
 	}
 	private void initCoordinate() {
 		String flagId = "";

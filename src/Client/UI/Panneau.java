@@ -1,9 +1,9 @@
 package Client.UI;
 
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
-import org.junit.jupiter.api.Timeout;
+import javax.xml.ws.handler.MessageContext;
 
 import Client.InitData;
 import Server.ExecuteDijkstra;
@@ -23,14 +23,16 @@ import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
+import java.lang.Object;
 
 public class Panneau extends JPanel {
 
-    private int radius = 20;
+    private int radius = 25;
     private String text = "stack";
     //bien graphic
     private List<Ellipse2D> nodes;
@@ -38,8 +40,9 @@ public class Panneau extends JPanel {
     private Point offset;
     private Vertex vertexCurrent;
     Graphics2D g2d;
-    // bien du lieu
+    // attribute
     
+    public boolean isDirectional ; 
     Hashtable<Ellipse2D,Vertex > nodeToVertex = new Hashtable<>();
     Hashtable<Vertex,Ellipse2D > vertexToNode = new Hashtable<>();
     Hashtable<Ellipse2D, Boolean> isPath = new Hashtable<Ellipse2D, Boolean>();
@@ -53,15 +56,19 @@ public class Panneau extends JPanel {
 	
 	private void init() {
 		
-		vertexs = data.getVertexs();
-		edges = data.getEdges();
-		ex = new ExecuteDijkstra(vertexs, edges);
+//		vertexs = data.getVertexs();
+//		edges = data.getEdges();
+//		ex = new ExecuteDijkstra(vertexs, edges);
 	}
 
 	
-    public Panneau() {
+    public Panneau(List<Vertex> vertexs,List<Edge> edges ) {
+    	this.vertexs = vertexs;
+    	this.edges = edges;
+    	isDirectional=true;
+        System.out.println("hi");
         nodes = new ArrayList<>(25);
-
+        
         //nodes.add(new Ellipse2D.Float(50 - (radius / 2), 100 - (radius / 2), radius, radius));
         //nodes.add(new Ellipse2D.Float(350 - (radius / 2), 100 - (radius / 2), radius, radius));
         init();
@@ -88,11 +95,6 @@ public class Panneau extends JPanel {
                         // node and the point it was clicked...
                         
                         offset = new Point(node.getBounds().x - e.getX(), node.getBounds().y - e.getY());
-                        //System.out.println("Click: Node vertex "+vertexToNode.get(vertexCurrent).getBounds().x);
-//                        System.out.println("id"+nodeToVertex.get(dragged).getId());
-                        
-                        //System.out.println("id"+nodeToId.get(vertexToNode.get(vertexCurrent)));
-                        //Highlight the clicked node
                         repaint();
                         break;
                     }
@@ -116,9 +118,6 @@ public class Panneau extends JPanel {
                 if (dragged != null && offset != null) {
                     // Adjust the position of the drag point to allow for the
                     // click point offset
-                	
-                	
-                	
                     Point to = e.getPoint();
                     to.x += offset.x;
                     to.y += offset.y;
@@ -132,10 +131,6 @@ public class Panneau extends JPanel {
 //                    System.out.println("Drag:id"+vertexCurrent.getId());
                     vertexToNode.put(vertexCurrent,dragged);
                     nodeToVertex.put(dragged, vertexCurrent);
-                	
-                    
-                    // repaint...
-                    //System.out.println(nodeToId.size());
                     repaint();
                     
                 }
@@ -143,18 +138,30 @@ public class Panneau extends JPanel {
             }
         });
     }
+    public void choseTypeOfLine(Graphics2D g2d,Point from, Point to) {
+    	// kiem tra loai do thi de ve duong thang
+        
+        if(isDirectional== true)	//nếu là có hướng vẽ đường là mũi tên 
+        {
+        	System.out.println("Có hướng");
+        	Arrow arrow;
+        	// câu lệnh if kiểm vị trí đế vẽ mũi tên hợp lý
+            if(from.y<to.y) {
+            	arrow = new Arrow(from.x, from.y, to.x, to.y-10);
+            	arrow.paint(g2d);
+            }
+            else {
+            	arrow = new Arrow(from.x, from.y, to.x-10, to.y+10);
+            	arrow.paint(g2d);
+            }
 
+        }
+        else {
+        	g2d.draw(new Line2D.Float(from, to));
+        	System.out.println("Vô hướng");
+        }
+    }
     public void drawLines() {
-    	
-		/*
-		 * for (Ellipse2D node : nodes) {
-		 * 
-		 * g2d.setColor(Color.BLACK); Point to = node.getBounds().getLocation(); to.x +=
-		 * radius / 2; to.y += radius / 2; if (p != null) { g2d.draw(new Line2D.Float(p,
-		 * to)); } p = to;
-		 * 
-		 * }
-		 */
     	for (Edge e : edges) {
 			// System.out.println(e.getSource()+"_"+e.getDestination());
 
@@ -168,24 +175,24 @@ public class Panneau extends JPanel {
             from.y += radius / 2;
             to.x += radius / 2;
             to.y += radius / 2;
-            g2d.draw(new Line2D.Float(from, to));
-
-			//g2d.drawLine(sou.x + 10, sou.y + 20, des.x + 10, des.y + 20);
-			//g2d.drawString(String.valueOf(e.getWeight()), (sou.x + des.x) / 2 + 20, (sou.y + des.y) / 2 + 20);
+            
+            choseTypeOfLine(g2d,from, to);
             g2d.drawString(String.valueOf(e.getWeight()), (from.x+to.x)/2,(from.y+to.y)/2);
 		}
     	
     }
     
-    public void drawPathDijkstra(int node_source, int node_destination) {
+    public void drawPathDijkstra(LinkedList<String> path) {
     	Point p = null;
-    	LinkedList<Vertex> path = ex.Execute(1, 10);
-    	
-    	System.out.println(path);
+    	//LinkedList<Vertex> path = ex.Execute(node_source, node_destination);
+    	isPath.clear();
+    	//System.out.println(path);
 		for (int i = 1; i < path.size(); i++) {
 			g2d.setPaint(Color.red);
-			Vertex sou = path.get(i - 1);
-			Vertex des = path.get(i);
+			//Vertex sou = path.get(i - 1);
+			//Vertex des = path.get(i);
+			Vertex sou = vertexs.get(Integer.valueOf(path.get(i-1)));
+			Vertex des = vertexs.get(Integer.valueOf(path.get(i)));
 			Ellipse2D node_begin =vertexToNode.get(sou);
 			Ellipse2D node_end =vertexToNode.get(des);
             Point from = node_begin.getBounds().getLocation();
@@ -196,7 +203,8 @@ public class Panneau extends JPanel {
             from.y += radius / 2;
             to.x += radius / 2;
             to.y += radius / 2;
-            g2d.draw(new Line2D.Float(from, to));
+            choseTypeOfLine(g2d, from, to);
+            //g2d.draw(new Line2D.Float(from, to));
             
 		}
     }
@@ -234,29 +242,46 @@ public class Panneau extends JPanel {
         
         g2d.dispose();
     }
+    public void save(String imageFile) {
+        Rectangle r = getBounds();
+
+        try {
+            BufferedImage i = new BufferedImage(r.width, r.height,
+                    BufferedImage.TYPE_INT_RGB);
+            Graphics g = i.getGraphics();
+            paint(g);
+            ImageIO.write(i, "png", new File(imageFile));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(400, 400);
     }
-
+    
+    public LinkedList<String> path = null;
     @Override
     protected void paintComponent(Graphics g) {
         // declaration
+        
         super.paintComponent(g);
-
         g2d = (Graphics2D) g.create();
         // Draw the connecting lines first
         // This ensures that the lines are under the nodes...
         drawLines();
-        
-        drawPathDijkstra(1, 9);
+        System.out.println("Path: "+path);
+        if(path!=null)
+        {
+        	drawPathDijkstra(path);
+        }
+         
         
         // Draw the nodes...
         
-        drawNodes(g);
+        drawNodes(g);        
         
-        
-
+        //g.dispose();
     }
 
 }

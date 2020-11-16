@@ -1,6 +1,8 @@
 package Client.DAO;
 
-public class Edge {
+import java.io.Serializable;
+
+public class Edge implements Serializable{
 
 	
     private final Vertex source;

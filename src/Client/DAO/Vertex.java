@@ -1,6 +1,8 @@
 package Client.DAO;
 
-public class Vertex {
+import java.io.Serializable;
+
+public class Vertex implements Serializable {
 
 	final private String id;
     final private String name;

@@ -1,11 +1,13 @@
 package Server;
 
+import java.io.IOException;
+
 public class Main {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ClassNotFoundException, IOException {
 		// TODO Auto-generated method stub
-		//ExecuteDijkstra ex = new ExecuteDijkstra();
-		//System.out.println(ex.Execute(0, 10));
+		Server s = new Server();
+		s.run();
 	}
 
 }
