@@ -12,8 +12,11 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.StringTokenizer;
 
+import org.apache.commons.codec.cli.Digest;
+import org.apache.commons.codec.digest.DigestUtils;
 
 import Server.DAO.Edge;
 import Server.DAO.Vertex;
@@ -32,6 +35,8 @@ public class Server {
 	private BufferedWriter out =null;
 	private ExecuteDijkstra ex = null; 
 	private StringTokenizer st =null;
+	private String key="DIJ";
+	private AESEncryption ase = new AESEncryption();
 	List<Edge> edges = new LinkedList<Edge>();
 	List<Vertex> vertexs = new LinkedList<Vertex>();
 	private String regexFind ="^find;[0-9]+;[0-9]+$";
@@ -42,6 +47,7 @@ public class Server {
 	}
 	public void send(String message) {
 		try {
+			message = ase.encrypt(message, key);
 			out.write(message);
 			out.newLine();
 			out.flush();
@@ -50,6 +56,17 @@ public class Server {
 			e.printStackTrace();
 		}
 		
+	}
+	public String recive() {
+		try {
+			String result = in.readLine();
+			return ase.decrypt(result, key);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.out.println("Không nhận được");
+		}
+		return null;
 	}
 	public void clearData() {
 		
@@ -62,45 +79,51 @@ public class Server {
 		vertexs.clear();
 		edges.clear();
 		String dataVertexs;
-		try {
-			dataVertexs = in.readLine();
-			st = new StringTokenizer(dataVertexs," ",false);
-			while(st.hasMoreTokens()) {
-				Vertex v = new Vertex(st.nextToken());
-				vertexs.add(v);
-			}
-			System.out.println(vertexs);
-			send("Adding vertexs is sucsess");
-			
-			
-			String dataEdges = in.readLine();
-			st = new StringTokenizer(dataEdges," ",false);
-			while(st.hasMoreTokens()) {
-				addLane(Integer.valueOf(st.nextToken()), Integer.valueOf(st.nextToken()), Integer.valueOf(st.nextToken()));
-			}
-			ex= new ExecuteDijkstra(vertexs, edges);
-			System.out.println();
-			send("Adding edges is sucsess");
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		dataVertexs = recive();
+		st = new StringTokenizer(dataVertexs," ",false);
+		while(st.hasMoreTokens()) {
+			Vertex v = new Vertex(st.nextToken());
+			vertexs.add(v);
 		}
+		System.out.println(vertexs);
+		send("Adding vertexs is sucsess");
 		
 		
+		String dataEdges = recive();
+		st = new StringTokenizer(dataEdges," ",false);
+		while(st.hasMoreTokens()) {
+			addLane(Integer.valueOf(st.nextToken()), Integer.valueOf(st.nextToken()), Integer.valueOf(st.nextToken()));
+		}
+		ex= new ExecuteDijkstra(vertexs, edges);
+		System.out.println();
+		send("Adding edges is sucsess");
+		
+		
+	}
+	private void generateKey() {
+		Random r = new Random();
+		int number = r.nextInt();
+		String rs = DigestUtils.md5Hex(number+"");
+		if(recive().equals(Status.New.toString())) {
+			send(rs);
+			this.key=rs;
+		}
 	}
 	public void run() throws IOException, ClassNotFoundException {
 		System.out.println("Server connected ");
 
-		
 		server = new ServerSocket(port);
 		socket = server.accept();
 		
 		in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 		
+		generateKey();
 		initData();
+		System.out.println(vertexs);
+		System.out.println(edges);
 		while(true) {
-			String command = in.readLine();
+			String command = recive();
 			
 			if(command.equals("close")) {
 				break;
@@ -110,7 +133,7 @@ public class Server {
 				//chưa làm xong
 			}
 			if(command.matches(regexReset)) {
-				send(StatusServer.Ready.toString());	
+				send(Status.Ready.toString());	
 				initData();
 				continue;
 			}
@@ -119,7 +142,9 @@ public class Server {
 				st.nextToken();
 				int source = Integer.valueOf(st.nextToken());
 				int destination = Integer.valueOf(st.nextToken());
-				send(getPath(source, destination));
+				String result =getPath(source, destination);
+				System.out.println("find: "+result);
+				send(result);
 				continue;
 				
 			}

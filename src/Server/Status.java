@@ -1,6 +1,8 @@
 package Server;
 
-public enum StatusServer {
+public enum Status {
+	New,
 	Ready,
 	Stop;
+	
 }

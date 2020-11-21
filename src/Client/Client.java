@@ -20,24 +20,28 @@ import Server.DAO.Edge;
 import Server.DAO.Vertex;
 
 public class Client {
-	private Socket socket =null;
+	private Socket socket = null;
 	private BufferedReader in = null;
 	private BufferedWriter out = null;
 	private InitData data = null;
-	
-	
+	private AESEncryption ase = new AESEncryption();
+	private String key = "DIJ";
+
 	String address = "localhost";
-	int port = 4321;
-	
+	int port = 1234;
+
 	public Client() {
-		
+
 	}
+
 	public boolean connect() {
 		try {
-			socket = new Socket(address,port);
+			socket = new Socket(address, port);
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-			
+
+			send(Status.New.toString());
+			this.key = recive();
 		} catch (UnknownHostException e) {
 			return false;
 		} catch (IOException e) {
@@ -45,26 +49,29 @@ public class Client {
 		}
 		return true;
 	}
+
 	private String VertexsToString() {
-		String result ="";
-		for(Vertex v : data.getVertexs()) {
-			result += v.getId()+" ";
+		String result = "";
+		for (Vertex v : data.getVertexs()) {
+			result += v.getId() + " ";
 		}
 		return result;
 	}
+
 	private String EdgesToString(boolean isDirectional) {
 		String result = "";
-		for(Edge e : data.getEdges()) {
-			result +=e.getSource()+" "+e.getDestination()+" "+e.getWeight()+" ";
-			if(isDirectional==false)
-			{
-				result += e.getDestination()+" "+ e.getSource()+" " + e.getWeight()+" ";
+		for (Edge e : data.getEdges()) {
+			result += e.getSource() + " " + e.getDestination() + " " + e.getWeight() + " ";
+			if (isDirectional == false) {
+				result += e.getDestination() + " " + e.getSource() + " " + e.getWeight() + " ";
 			}
 		}
 		return result.trim();
 	}
+
 	public void send(String message) {
 		try {
+			message = ase.encrypt(message, key);
 			out.write(message);
 			out.newLine();
 			out.flush();
@@ -73,60 +80,59 @@ public class Client {
 			e.printStackTrace();
 			System.out.println("Không gửi đi được");
 		}
-		
+
 	}
-	public void init(InitData data ,boolean isDirectional) {
-		this.data=data;
+
+	public String recive() {
 		try {
-//			out.write(VertexsToString());
-//			out.newLine();
-//			out.flush();
-			
-			send(VertexsToString());
-			
 			String result = in.readLine();
-			System.out.println(result);
-			
-//			out.write(EdgesToString(isDirectional));
-//			out.newLine();
-//			out.flush();
-			
-			send(EdgesToString(isDirectional));
-			
-			result = in.readLine();
-			System.out.println(result);
+			return ase.decrypt(result, key);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Không nhận được");
 		}
-		
+		return null;
 	}
-	public void resetData(InitData data,boolean isDirectional) throws IOException {
+
+	public void init(InitData data, boolean isDirectional) {
+
+		this.data = data;
+		send(VertexsToString());
+
+		String result = recive();
+		System.out.println(result);
+
+		send(EdgesToString(isDirectional));
+
+		result = recive();
+		System.out.println(result);
+
+	}
+
+	public void resetData(InitData data, boolean isDirectional) throws IOException {
 		send("reset");
-		String status = in.readLine();
-		if(status.equals(StatusServer.Ready.toString())) {
+		String status = recive();
+		if (status.equals(Status.Ready.toString())) {
 			init(data, isDirectional);
 		}
 		System.out.println("reseting is successfull");
-		
+
 	}
-	
+
 	public LinkedList<String> findPath(int source, int destination) throws IOException {
-		
-		out.write("find;"+source+";"+destination);
-		out.newLine();
-		out.flush();
-		String result = in.readLine();
-		StringTokenizer st = new StringTokenizer(result," ",false);
+		send("find;" + source + ";" + destination);
+		String result = recive();
+		StringTokenizer st = new StringTokenizer(result, " ", false);
 		LinkedList<String> tmp = new LinkedList<String>();
-		while(st.hasMoreTokens()) {
+		while (st.hasMoreTokens()) {
 			tmp.add(st.nextToken());
 		}
 		return tmp;
 	}
-	
+
 	public void close() {
 		try {
+			send("close");
 			in.close();
 			out.close();
 			socket.close();
@@ -135,10 +141,13 @@ public class Client {
 			e.printStackTrace();
 		}
 	}
+
 	public InitData getData() {
 		return data;
 	}
+
 	public void setData(InitData data) {
 		this.data = data;
 	}
+
 }

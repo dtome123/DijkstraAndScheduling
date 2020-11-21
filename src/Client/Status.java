@@ -1,6 +1,7 @@
 package Client;
 
-public enum StatusServer {
+public enum Status {
+	New,
 	Ready,
 	Stop;
 	
