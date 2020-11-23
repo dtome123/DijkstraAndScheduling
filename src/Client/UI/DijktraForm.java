@@ -75,7 +75,9 @@ public class DijktraForm extends JFrame {
 
 	// attribute
 	private Client c = new Client();
-	InitData data = new InitData();
+	// data của vertexs và edges
+	private InitData data = new InitData();
+	//vẽ 
 	private Panneau paneGraph;
 
 	/**
@@ -113,6 +115,7 @@ public class DijktraForm extends JFrame {
 			Object[] items = new Object[] { id1, id2, w };
 			model.addRow(items);
 		}
+		tableData.setModel(model);
 	}
 
 	private void loadComboBoxVertex() {
@@ -132,6 +135,9 @@ public class DijktraForm extends JFrame {
 
 		group.add(rbtnDdirectional);
 		group.add(rbtnScalar);
+		
+		paneGraph.setBorder(BorderFactory.createLineBorder(Color.black));
+		
 
 	}
 
@@ -225,10 +231,7 @@ public class DijktraForm extends JFrame {
 
 		tableData = new JTable();
 		contentPane.add(tableData, BorderLayout.CENTER);
-		createTableData();
-		tableData.setModel(model);
-
-		System.out.println(tableData.getModel().getColumnName(0));
+		
 		tableData.setBackground(Color.white);
 		tableData.setForeground(Color.black);
 		tableData.setSelectionForeground(Color.white);
@@ -313,10 +316,10 @@ public class DijktraForm extends JFrame {
 		btnClose.setBounds(1326, 0, 33, 35);
 
 		contentPane.add(btnClose);
-
+		createTableData();
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setUndecorated(true);
-
+		
 	}
 
 	/// function

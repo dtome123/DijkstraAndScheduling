@@ -40,8 +40,9 @@ public class Panneau extends JPanel {
 	private Point offset;
 	private Vertex vertexCurrent;
 	Graphics2D g2d;
+	
+	
 	// attribute
-
 	public boolean isDirectional;
 	Hashtable<Ellipse2D, Vertex> nodeToVertex = new Hashtable<>();
 	Hashtable<Vertex, Ellipse2D> vertexToNode = new Hashtable<>();
@@ -49,7 +50,6 @@ public class Panneau extends JPanel {
 
 	private List<Vertex> vertexs = new ArrayList<Vertex>();
 	private List<Edge> edges = new ArrayList<Edge>();
-
 	private LinkedList<String> path = null;
 
 	public LinkedList<String> getPath() {
@@ -161,7 +161,6 @@ public class Panneau extends JPanel {
 
 		} else {
 			g2d.draw(new Line2D.Float(from, to));
-			System.out.println("Vô hướng");
 		}
 	}
 
