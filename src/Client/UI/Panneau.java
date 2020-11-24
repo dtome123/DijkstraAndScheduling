@@ -5,7 +5,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.xml.ws.handler.MessageContext;
 
-import Client.InitData;
+import Client.Controler.InitData;
 import Server.ExecuteDijkstra;
 import Server.DAO.Edge;
 import Server.DAO.Vertex;

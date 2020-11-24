@@ -2,6 +2,7 @@ package Server;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -13,6 +14,7 @@ import java.util.Random;
 import java.util.StringTokenizer;
 
 import org.apache.commons.codec.digest.DigestUtils;
+import org.json.simple.parser.ParseException;
 
 import Server.DAO.Edge;
 import Server.DAO.Vertex;
@@ -25,14 +27,15 @@ public class Worker implements Runnable{
 		private BufferedWriter out;
 		
 		private ExecuteDijkstra ex = null; 
+		private SchedulingAlgorithm schedule= new SchedulingAlgorithm();
 		private StringTokenizer st =null;
 		private String key="DIJ";
 		private AESEncryption aes = new AESEncryption();
 		List<Edge> edges = new LinkedList<Edge>();
 		List<Vertex> vertexs = new LinkedList<Vertex>();
 		private String regexFind ="^find;[0-9]+;[0-9]+$";
-		private String regexCreate= "^create$";
-		private String regexReset="^reset$";
+		private String regexCreateDiJ= "^createDij$";
+		private String regexResetDij="^resetDij$";
 		
 		public Worker(Socket socket, String name) {
 			try {
@@ -111,9 +114,8 @@ public class Worker implements Runnable{
 			
 			System.out.println("Server connected with client "+name);
 			generateKey();
-			initData();
-			System.out.println(vertexs);
-			System.out.println(edges);
+			
+//			initData();
 			while(true) {
 				String command = recive();
 				
@@ -121,7 +123,49 @@ public class Worker implements Runnable{
 					break;
 				}
 
-				if(command.matches(regexReset)) {
+				if(command.equals("createScheduling")) {
+					send(Status.Ready.toString());
+					schedule.setData(recive());
+					continue;
+				}
+				if(command.equals("FCFS"))
+				{
+					try {
+						send(schedule.drawFCSC());
+					} catch (FileNotFoundException | ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				if(command.equals("SJF"))
+				{
+					try {
+						send(schedule.drawSJF());
+					} catch (FileNotFoundException | ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				if(command.equals("RR"))
+				{
+					try {
+						send(schedule.drawRR());
+					} catch (FileNotFoundException | ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				if(command.equals("Priority"))
+				{
+					try {
+						send(schedule.drawPriority());
+					} catch (FileNotFoundException | ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+				
+				if(command.matches(regexResetDij)) {
 					send(Status.Ready.toString());	
 					initData();
 					continue;

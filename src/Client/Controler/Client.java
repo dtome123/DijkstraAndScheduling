@@ -1,4 +1,4 @@
-package Client;
+package Client.Controler;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -9,6 +9,8 @@ import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.StringTokenizer;
@@ -26,6 +28,7 @@ public class Client {
 	private InitData data = null;
 	private AESEncryption ase = new AESEncryption();
 	private String key = "DIJ";
+	//dtome
 
 	String address = "localhost";
 	int port = 1234;
@@ -94,7 +97,7 @@ public class Client {
 		return null;
 	}
 
-	public void init(InitData data, boolean isDirectional) {
+	public void initDij(InitData data, boolean isDirectional) {
 
 		this.data = data;
 		send(VertexsToString());
@@ -108,12 +111,33 @@ public class Client {
 		System.out.println(result);
 
 	}
+	public void initScheduling(String data) {
+		send("createScheduling");
+		String status =recive();
+		if(status.equals(Status.Ready.toString())) {
+			send(data);
+		}
+	}
+	
+	private ArrayList<String> getResultOfSchedule() {
+		ArrayList<String> result = new ArrayList<String>();
+		StringTokenizer st = new StringTokenizer(recive()," ",false);
+		while(st.hasMoreTokens()) {
+			result.add(st.nextToken());
+		}
+		System.out.println("Result: "+result);
+		return result;
+	}
+	public String schedule(String type){
+		send(type);
+		return recive(); 
+	}
 
 	public void resetData(InitData data, boolean isDirectional) throws IOException {
-		send("reset");
+		send("resetDij");
 		String status = recive();
 		if (status.equals(Status.Ready.toString())) {
-			init(data, isDirectional);
+			initDij(data, isDirectional);
 		}
 		System.out.println("reseting is successfull");
 
@@ -129,7 +153,7 @@ public class Client {
 		}
 		return tmp;
 	}
-
+	
 	public void close() {
 		try {
 			send("close");

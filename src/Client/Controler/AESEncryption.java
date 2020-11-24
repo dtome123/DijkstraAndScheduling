@@ -1,4 +1,4 @@
-package Client;
+package Client.Controler;
 
 import java.security.MessageDigest;
 import java.util.Arrays;

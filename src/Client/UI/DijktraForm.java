@@ -25,8 +25,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
-import Client.Client;
-import Client.InitData;
+import Client.Controler.Client;
+import Client.Controler.InitData;
 import Server.DAO.Edge;
 import Server.DAO.Vertex;
 
@@ -148,7 +148,14 @@ public class DijktraForm extends JFrame {
 		if (data.getVertexs().size() == 0)
 			return;
 		if (c.connect()) {
-			c.init(data, true);
+			//c.init(data, true);
+			try {
+				c.resetData(data, true);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				JOptionPane.showMessageDialog(null, "Không khởi tạo dữ liệu được");
+			}
 			newUI();
 		} else {
 			JOptionPane.showMessageDialog(null, "Không kết nối được với server");
@@ -157,7 +164,7 @@ public class DijktraForm extends JFrame {
 	}
 
 	public DijktraForm() {
-		File f = new File("src//Client//data.txt");
+		File f = new File("src//Client//Controler//data.txt");
 		init(f);
 		setBounds(100, 100, 1433, 744);
 		contentPane = new JPanel();

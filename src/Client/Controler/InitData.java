@@ -1,4 +1,4 @@
-package Client;
+package Client.Controler;
 
 import java.io.File;
 import java.io.FileNotFoundException;

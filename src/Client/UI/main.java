@@ -2,9 +2,7 @@ package Client.UI;
 
 import java.io.File;
 
-import Client.InitData;
-
-import Client.InitData;
+import Client.Controler.InitData;
 
 public class main {
 
