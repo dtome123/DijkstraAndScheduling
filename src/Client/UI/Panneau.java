@@ -71,6 +71,7 @@ public class Panneau extends JPanel {
 
 		System.out.println(vertexs);
 		System.out.println(edges);
+		
 		isDirectional = true;
 
 		nodes = new ArrayList<>(25);

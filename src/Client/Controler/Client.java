@@ -22,38 +22,43 @@ import Server.DAO.Edge;
 import Server.DAO.Vertex;
 
 public class Client {
-	private Socket socket = null;
-	private BufferedReader in = null;
-	private BufferedWriter out = null;
-	private InitData data = null;
-	private AESEncryption ase = new AESEncryption();
-	private String key = "DIJ";
-	//dtome
-
-	String address = "localhost";
-	int port = 1234;
+	private static Socket socket = null;
+	private static BufferedReader in = null;
+	private static BufferedWriter out = null;
+	private static InitData data = null;
+	private static AESEncryption ase = new AESEncryption();
+	private static String key = "DIJ";
+	
+	static boolean isConnected;
+	static String address = "localhost";
+	static int port = 1234;
 
 	public Client() {
 
 	}
+	public static boolean isConnected() {
+		return isConnected;
+	}
 
-	public boolean connect() {
+	public static void connect() {
 		try {
 			socket = new Socket(address, port);
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
 			send(Status.New.toString());
-			this.key = recive();
+			key = recive();
 		} catch (UnknownHostException e) {
-			return false;
+			isConnected= false;
+			return;
 		} catch (IOException e) {
-			return false;
+			isConnected =false;
 		}
-		return true;
+		isConnected=  true;
+		
 	}
 
-	private String VertexsToString() {
+	private static String VertexsToString() {
 		String result = "";
 		for (Vertex v : data.getVertexs()) {
 			result += v.getId() + " ";
@@ -61,7 +66,7 @@ public class Client {
 		return result;
 	}
 
-	private String EdgesToString(boolean isDirectional) {
+	private static String EdgesToString(boolean isDirectional) {
 		String result = "";
 		for (Edge e : data.getEdges()) {
 			result += e.getSource() + " " + e.getDestination() + " " + e.getWeight() + " ";
@@ -72,7 +77,7 @@ public class Client {
 		return result.trim();
 	}
 
-	public void send(String message) {
+	public static void send(String message) {
 		try {
 			message = ase.encrypt(message, key);
 			out.write(message);
@@ -86,7 +91,7 @@ public class Client {
 
 	}
 
-	public String recive() {
+	public static String recive() {
 		try {
 			String result = in.readLine();
 			return ase.decrypt(result, key);
@@ -97,9 +102,9 @@ public class Client {
 		return null;
 	}
 
-	public void initDij(InitData data, boolean isDirectional) {
+	public static void initDij(InitData new_data, boolean isDirectional) {
 
-		this.data = data;
+		data = new_data;
 		send(VertexsToString());
 
 		String result = recive();
@@ -111,7 +116,7 @@ public class Client {
 		System.out.println(result);
 
 	}
-	public void initScheduling(String data) {
+	public static void initScheduling(String data) {
 		send("createScheduling");
 		String status =recive();
 		if(status.equals(Status.Ready.toString())) {
@@ -119,7 +124,7 @@ public class Client {
 		}
 	}
 	
-	private ArrayList<String> getResultOfSchedule() {
+	private static ArrayList<String> getResultOfSchedule() {
 		ArrayList<String> result = new ArrayList<String>();
 		StringTokenizer st = new StringTokenizer(recive()," ",false);
 		while(st.hasMoreTokens()) {
@@ -128,12 +133,12 @@ public class Client {
 		System.out.println("Result: "+result);
 		return result;
 	}
-	public String schedule(String type){
+	public static String schedule(String type){
 		send(type);
 		return recive(); 
 	}
 
-	public void resetData(InitData data, boolean isDirectional) throws IOException {
+	public static void resetData(InitData data, boolean isDirectional) throws IOException {
 		send("resetDij");
 		String status = recive();
 		if (status.equals(Status.Ready.toString())) {
@@ -143,7 +148,7 @@ public class Client {
 
 	}
 
-	public LinkedList<String> findPath(int source, int destination) throws IOException {
+	public static LinkedList<String> findPath(int source, int destination) throws IOException {
 		send("find;" + source + ";" + destination);
 		String result = recive();
 		StringTokenizer st = new StringTokenizer(result, " ", false);
@@ -154,7 +159,7 @@ public class Client {
 		return tmp;
 	}
 	
-	public void close() {
+	public static void close() {
 		try {
 			send("close");
 			in.close();

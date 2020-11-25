@@ -7,6 +7,7 @@ package Client.UI;
 
 import java.io.File;
 import javax.swing.JFileChooser;
+import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 
 import Client.UI.CPUscheduling;
@@ -15,7 +16,7 @@ import Client.UI.CPUscheduling;
  *
  * @author THANH
  */
-public class CPUSchedulingForm extends javax.swing.JFrame {
+public class CPUSchedulingForm extends JInternalFrame {
 
     public String getLink;
     public boolean isConnected;
@@ -124,7 +125,7 @@ public class CPUSchedulingForm extends javax.swing.JFrame {
         );
 
         pack();
-        setLocationRelativeTo(null);
+        //setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFileActionPerformed

@@ -5,6 +5,7 @@ import java.awt.Button;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.Border;
@@ -57,7 +58,7 @@ import javax.swing.DropMode;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
-public class DijktraForm extends JFrame {
+public class DijktraForm extends JInternalFrame  {
 
 	// component
 	private JPanel contentPane;
@@ -74,7 +75,7 @@ public class DijktraForm extends JFrame {
 	DefaultComboBoxModel<Vertex> verDestinaion = new DefaultComboBoxModel<Vertex>();
 
 	// attribute
-	private Client c = new Client();
+	
 	// data của vertexs và edges
 	private InitData data = new InitData();
 	//vẽ 
@@ -88,7 +89,7 @@ public class DijktraForm extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-
+					Client.connect();
 					DijktraForm frame = new DijktraForm();
 					frame.setVisible(true);
 
@@ -147,10 +148,10 @@ public class DijktraForm extends JFrame {
 		paneGraph.initData(data.getVertexs(), data.getEdges());
 		if (data.getVertexs().size() == 0)
 			return;
-		if (c.connect()) {
-			//c.init(data, true);
+		if (Client.isConnected()) {
+			//Client.init(data, true);
 			try {
-				c.resetData(data, true);
+				Client.resetData(data, true);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -177,28 +178,28 @@ public class DijktraForm extends JFrame {
 		panel_1.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		if (data.getVertexs().size() > 0)
 			panel_1 = paneGraph;
-		panel_1.setBounds(203, 70, 734, 693);
+		panel_1.setBounds(202, 70, 734, 589);
 		contentPane.add(panel_1);
 
 		JPanel panel_2 = new JPanel();
 		panel_2.setBackground(Color.WHITE);
 		panel_2.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-		panel_2.setBounds(1010, 70, 309, 635);
+		panel_2.setBounds(1010, 70, 309, 531);
 		contentPane.add(panel_2);
 		panel_2.setLayout(null);
 
 		JLabel lblNewLabel = new JLabel("Điểm đầu");
-		lblNewLabel.setBounds(26, 87, 76, 14);
+		lblNewLabel.setBounds(26, 26, 76, 14);
 		panel_2.add(lblNewLabel);
 
 		JLabel lblimCui = new JLabel("Điểm cuối");
-		lblimCui.setBounds(26, 128, 76, 14);
+		lblimCui.setBounds(26, 67, 76, 14);
 		panel_2.add(lblimCui);
 
-		cbVerSource.setBounds(112, 83, 71, 22);
+		cbVerSource.setBounds(112, 22, 71, 22);
 		panel_2.add(cbVerSource);
 
-		cbVerDestination.setBounds(112, 124, 71, 22);
+		cbVerDestination.setBounds(112, 63, 71, 22);
 		panel_2.add(cbVerDestination);
 		Object[] columns = { "1", "2", "3" };
 		DefaultTableModel modeltable = new DefaultTableModel();
@@ -210,12 +211,12 @@ public class DijktraForm extends JFrame {
 				findpath();
 			}
 		});
-		btnFindPath.setBounds(26, 183, 132, 23);
+		btnFindPath.setBounds(26, 105, 132, 23);
 		panel_2.add(btnFindPath);
 		txtaResult.setFont(new Font("Monospaced", Font.PLAIN, 12));
 
 		txtaResult.setEditable(false);
-		txtaResult.setBounds(26, 321, 259, 187);
+		txtaResult.setBounds(26, 209, 259, 187);
 		Border border = BorderFactory.createLineBorder(Color.black);
 		txtaResult
 				.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
@@ -223,7 +224,7 @@ public class DijktraForm extends JFrame {
 
 		JLabel lblNewLabel_2 = new JLabel("Kết quả đường đi");
 		lblNewLabel_2.setFont(new Font("Tahoma", Font.BOLD, 15));
-		lblNewLabel_2.setBounds(26, 280, 197, 30);
+		lblNewLabel_2.setBounds(26, 168, 197, 30);
 		panel_2.add(lblNewLabel_2);
 
 		JButton btnExportImage = new JButton("Export Image");
@@ -233,7 +234,7 @@ public class DijktraForm extends JFrame {
 			}
 		});
 		btnExportImage.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btnExportImage.setBounds(26, 555, 142, 30);
+		btnExportImage.setBounds(26, 434, 142, 30);
 		panel_2.add(btnExportImage);
 
 		tableData = new JTable();
@@ -264,7 +265,7 @@ public class DijktraForm extends JFrame {
 					paneGraph.isPath.clear();
 					paneGraph.setPath(null);
 					try {
-						c.resetData(data, paneGraph.isDirectional);
+						Client.resetData(data, paneGraph.isDirectional);
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -285,7 +286,7 @@ public class DijktraForm extends JFrame {
 					paneGraph.isPath.clear();
 					paneGraph.setPath(null);
 					try {
-						c.resetData(data, paneGraph.isDirectional);
+						Client.resetData(data, paneGraph.isDirectional);
 					} catch (IOException e1) {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
@@ -309,23 +310,13 @@ public class DijktraForm extends JFrame {
 				}
 			}
 		});
-		btnImportData.setBounds(10, 111, 89, 23);
+		btnImportData.setBounds(10, 111, 139, 23);
 		contentPane.add(btnImportData);
 
 		Icon icon = new ImageIcon("src//Image//close_window_48px.png");
-		JButton btnClose = new JButton(icon);
-		btnClose.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				c.close();
-				dispose();
-			}
-		});
-		btnClose.setBounds(1326, 0, 33, 35);
-
-		contentPane.add(btnClose);
 		createTableData();
-		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		setUndecorated(true);
+		//this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		//setUndecorated(true);
 		
 	}
 
@@ -343,7 +334,13 @@ public class DijktraForm extends JFrame {
 				paneGraph.initData(data.getVertexs(), data.getEdges());
 				paneGraph.isPath.clear();
 				paneGraph.setPath(null);
-				c.resetData(data, paneGraph.isDirectional);
+				if(rbtnDdirectional.isSelected()) {
+					paneGraph.isDirectional=true;
+				}
+				else {
+					paneGraph.isDirectional=false;
+				}
+				Client.resetData(data, paneGraph.isDirectional);
 				paneGraph.repaint();
 				createTableData();
 				newUI();
@@ -362,7 +359,7 @@ public class DijktraForm extends JFrame {
 		// kiểm tra node
 		if (source != destiantion) {
 			try {
-				temp = c.findPath(source, destiantion);
+				temp = Client.findPath(source, destiantion);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -411,10 +408,10 @@ public class DijktraForm extends JFrame {
 		if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
 			System.out.println("getCurrentDirectory(): " + chooser.getCurrentDirectory());
 			System.out.println("getSelectedFile() : " + chooser.getSelectedFile());
-			Container c = paneGraph;
-			BufferedImage im = new BufferedImage(c.getWidth(), c.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			Container container = paneGraph;
+			BufferedImage im = new BufferedImage(container.getWidth(), container.getHeight(), BufferedImage.TYPE_INT_ARGB);
 			String path = chooser.getSelectedFile() + "\\";
-			c.paint(im.getGraphics());
+			container.paint(im.getGraphics());
 			try {
 				ImageIO.write(im, "PNG", new File(path + "" + "graph.png"));
 			} catch (IOException e1) {

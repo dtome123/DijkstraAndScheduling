@@ -20,9 +20,9 @@ import org.json.simple.parser.ParseException;
 import Client.Controler.Client;
 
 public class CPUscheduling {
-	private static Client c= new Client();
+	
 	public static boolean connect() {
-		boolean connect= c.connect();
+		boolean connect= Client.isConnected();
 		if(connect==false) {
 			JOptionPane.showMessageDialog(null, "Không kết nối được server");
 		}
@@ -49,7 +49,7 @@ public class CPUscheduling {
              System.out.println("Đã xảy ra lỗi khi đọc dữ liệu từ file: "+ex);
          }
         
-        c.initScheduling(data);
+        Client.initScheduling(data);
         
         JSONParser Parser = new JSONParser();
         JSONObject objectJson = (JSONObject) Parser.parse(data);
@@ -118,7 +118,7 @@ public class CPUscheduling {
            } catch (IOException ex) {
              System.out.println("Đã xảy ra lỗi khi đọc dữ liệu từ file: "+ex);
          }
-        c.initScheduling(data);
+        Client.initScheduling(data);
         JSONParser Parser = new JSONParser();
         JSONObject objectJson = (JSONObject) Parser.parse(data);
         System.out.println("Quantime: " + objectJson.get("quantime"));
@@ -129,7 +129,7 @@ public class CPUscheduling {
     public static void drawFCSC(String TypeSheduling, String path) throws FileNotFoundException, ParseException {
         Process[] arrProcesses = InitDataProcesses(path);
     
-        String result=c.schedule("FCFS");
+        String result=Client.schedule("FCFS");
         System.out.println(result);
         Process[]temp= new Process[arrProcesses.length]; 
         temp = parrseStringToArr(result,arrProcesses.length);
@@ -141,7 +141,7 @@ public class CPUscheduling {
     
     public static void drawSJF(String TypeSheduling, String path) throws FileNotFoundException, ParseException {
         Process[] arrProcesses = InitDataProcesses(path);
-        String result=c.schedule("SJF");
+        String result=Client.schedule("SJF");
         System.out.println(result);
         Process[]temp= new Process[arrProcesses.length]; 
         temp = parrseStringToArr(result,arrProcesses.length);
@@ -152,7 +152,7 @@ public class CPUscheduling {
     
     public static void drawPriority(String TypeSheduling, String path) throws FileNotFoundException, ParseException {
         Process[] arrProcesses = InitDataProcesses(path);
-        String result=c.schedule("Priority");
+        String result=Client.schedule("Priority");
         System.out.println(result);
         Process[]temp= new Process[arrProcesses.length]; 
         temp = parrseStringToArr(result,arrProcesses.length);
@@ -163,7 +163,7 @@ public class CPUscheduling {
     
     public static void drawRR(String TypeSheduling, String path) throws FileNotFoundException, ParseException {
         Process[] arrProcesses = InitDataProcesses(path);        
-        String result=c.schedule("RR");
+        String result=Client.schedule("RR");
         System.out.println(result);
         Process[]temp= new Process[arrProcesses.length]; 
         temp = parrseStringToArr(result,arrProcesses.length);
