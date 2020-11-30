@@ -120,6 +120,7 @@ public class Worker implements Runnable{
 				String command = recive();
 				
 				if(command.equals("close")) {
+					System.out.println("Client "+name +" close");
 					break;
 				}
 

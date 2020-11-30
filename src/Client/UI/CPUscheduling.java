@@ -24,7 +24,7 @@ public class CPUscheduling {
 	public static boolean connect() {
 		boolean connect= Client.isConnected();
 		if(connect==false) {
-			JOptionPane.showMessageDialog(null, "Không kết nối được server");
+			
 		}
 		return connect;
 		

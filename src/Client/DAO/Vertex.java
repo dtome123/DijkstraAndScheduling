@@ -2,10 +2,11 @@ package Client.DAO;
 
 import java.io.Serializable;
 
-public class Vertex implements Serializable {
+
+
+public class Vertex {
 
 	final private String id;
-    final private String name;
     public int x;
     public int y;
     
@@ -13,20 +14,16 @@ public class Vertex implements Serializable {
     	this.x=-1;
     	this.y=-1;
 		this.id = "";
-		this.name = "";
     }
     
-	public Vertex(String id, String name) {
+	public Vertex(String id) {
         this.id = id;
-        this.name = name;
+        
     }
     public String getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
 
     @Override
     public int hashCode() {
@@ -55,7 +52,8 @@ public class Vertex implements Serializable {
 
     @Override
     public String toString() {
-        return name;
+        return id;
     }
+
 
 }

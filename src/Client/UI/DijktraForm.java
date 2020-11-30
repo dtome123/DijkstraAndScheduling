@@ -28,8 +28,8 @@ import javax.swing.table.DefaultTableModel;
 
 import Client.Controler.Client;
 import Client.Controler.InitData;
-import Server.DAO.Edge;
-import Server.DAO.Vertex;
+import Client.DAO.Edge;
+import Client.DAO.Vertex;
 
 import java.awt.Color;
 import java.awt.Container;
@@ -65,6 +65,8 @@ public class DijktraForm extends JInternalFrame  {
 	private JPanel panel_1;
 	private JComboBox cbVerSource = new JComboBox();
 	private JComboBox cbVerDestination = new JComboBox();
+	private JButton btnFindPath = new JButton("Tìm đường");
+	private JButton btnImportData = new JButton("Import data");
 	private JTable tableData = new JTable();
 	private JRadioButton rbtnDdirectional = new JRadioButton("Đồ thị có hướng");
 	private JRadioButton rbtnScalar = new JRadioButton("Đồ thị vô hướng");
@@ -75,7 +77,7 @@ public class DijktraForm extends JInternalFrame  {
 	DefaultComboBoxModel<Vertex> verDestinaion = new DefaultComboBoxModel<Vertex>();
 
 	// attribute
-	
+	private boolean flag =true;//connect được server
 	// data của vertexs và edges
 	private InitData data = new InitData();
 	//vẽ 
@@ -106,8 +108,14 @@ public class DijktraForm extends JInternalFrame  {
 	String[] columns = new String[] { "Đỉnh đầu", "Đỉnh cuối", "Trọng số" };
 	DefaultTableModel model = new DefaultTableModel(null, columns);
 
+	//dữ liệu của file text 
+	//so dinh
+	//[s] [d] [w]: edge 
 	private void createTableData() {
-
+		if(flag==false)
+		{
+			return;
+		}
 		model.setRowCount(0);
 		for (Edge e : data.getEdges()) {
 			String id1 = e.getSource().getId();
@@ -138,16 +146,23 @@ public class DijktraForm extends JInternalFrame  {
 		group.add(rbtnScalar);
 		
 		paneGraph.setBorder(BorderFactory.createLineBorder(Color.black));
-		
-
+		rbtnDdirectional.setEnabled(true);
+		rbtnScalar.setEnabled(true);
+		btnFindPath.setEnabled(true);
+		btnImportData.setEnabled(true);
 	}
 
 	public void init(File f) {
 		paneGraph = new Panneau();
-		data.readFile(f);
-		paneGraph.initData(data.getVertexs(), data.getEdges());
-		if (data.getVertexs().size() == 0)
+		if(data.readFile(f)==true) {
+			data.readFile(f);
+			paneGraph.initData(data.getVertexs(), data.getEdges());
+		}
+		else {
+			flag=false;
 			return;
+		}
+		
 		if (Client.isConnected()) {
 			//Client.init(data, true);
 			try {
@@ -159,6 +174,10 @@ public class DijktraForm extends JInternalFrame  {
 			}
 			newUI();
 		} else {
+			rbtnDdirectional.setEnabled(false);
+			rbtnScalar.setEnabled(false);
+			btnFindPath.setEnabled(false);
+			btnImportData.setEnabled(false);
 			JOptionPane.showMessageDialog(null, "Không kết nối được với server");
 		}
 		
@@ -205,7 +224,7 @@ public class DijktraForm extends JInternalFrame  {
 		DefaultTableModel modeltable = new DefaultTableModel();
 		modeltable.setColumnIdentifiers(columns);
 
-		JButton btnFindPath = new JButton("Tìm đường");
+		
 		btnFindPath.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				findpath();
@@ -218,8 +237,7 @@ public class DijktraForm extends JInternalFrame  {
 		txtaResult.setEditable(false);
 		txtaResult.setBounds(26, 209, 259, 187);
 		Border border = BorderFactory.createLineBorder(Color.black);
-		txtaResult
-				.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
+		txtaResult.setBorder(BorderFactory.createCompoundBorder(border, BorderFactory.createEmptyBorder(10, 10, 10, 10)));
 		panel_2.add(txtaResult);
 
 		JLabel lblNewLabel_2 = new JLabel("Kết quả đường đi");
@@ -299,7 +317,7 @@ public class DijktraForm extends JInternalFrame  {
 		rbtnScalar.setBounds(6, 564, 159, 23);
 		contentPane.add(rbtnScalar);
 
-		JButton btnImportData = new JButton("Import data");
+		
 		btnImportData.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
@@ -349,13 +367,32 @@ public class DijktraForm extends JInternalFrame  {
 		}
 	}
 
+	private boolean checkVertexInGraph(int s) {
+		
+		for(Edge e: data.getEdges()) {
+			if(e.getSource().getId().equals(s+"")||e.getDestination().getId().equals(s+"")){
+				return true;
+			}
+		}
+		return false;
+	}
 	private void findpath() {
 		// tìm đường đi tra ve biến temp
 		LinkedList<String> temp = new LinkedList<String>();
 		// lấy node source và destination
 		int source = Integer.valueOf(((Vertex) cbVerSource.getSelectedItem()).getId());
 		int destiantion = Integer.valueOf(((Vertex) cbVerDestination.getSelectedItem()).getId());
-
+		if(checkVertexInGraph(source)==false)
+		{
+			JOptionPane.showMessageDialog(null, "Điểm nguồn không tồn tại trong đồ thị");
+			return;
+		}
+		if(checkVertexInGraph(destiantion)==false)
+		{
+			JOptionPane.showMessageDialog(null, "Điểm cuối không tồn tại trong đồ thị");
+			return;
+		}
+		
 		// kiểm tra node
 		if (source != destiantion) {
 			try {

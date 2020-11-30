@@ -6,9 +6,10 @@ import javax.swing.JPanel;
 import javax.xml.ws.handler.MessageContext;
 
 import Client.Controler.InitData;
+import Client.DAO.Edge;
+import Client.DAO.Vertex;
 import Server.ExecuteDijkstra;
-import Server.DAO.Edge;
-import Server.DAO.Vertex;
+
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -129,6 +130,7 @@ public class Panneau extends JPanel {
 					Point to = e.getPoint();
 					to.x += offset.x;
 					to.y += offset.y;
+					
 
 					// Modify the position of the node...
 					Rectangle bounds = dragged.getBounds();

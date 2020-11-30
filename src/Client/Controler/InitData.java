@@ -10,8 +10,10 @@ import java.util.StringTokenizer;
 
 import javax.swing.JOptionPane;
 
-import Server.DAO.Edge;
-import Server.DAO.Vertex;
+import Client.DAO.Edge;
+import Client.DAO.Vertex;
+
+
 
 public class InitData {
 	// du liệu chính thức
@@ -24,6 +26,9 @@ public class InitData {
 
 	Hashtable<Vertex, Boolean> isDestination = new Hashtable<>();
 	private String fileName = "src\\Client\\data.txt";
+
+	private String pattern_number = "^[0-9]+$";
+	private String patternStruct = "^[0-9]+ [0-9]+ [0-9]+$";
 
 	public InitData() {
 
@@ -49,16 +54,27 @@ public class InitData {
 		JOptionPane.showMessageDialog(null, message);
 	}
 
-	public boolean check(int linenumber, int source, int destination, int weight) {
-		if (source == destination) {
+	public boolean check(int linenumber, String source, String destination, String weight) {
+
+		int s = 0, d = 0, w = 0;
+		if (!String.valueOf(source).matches(pattern_number) || !String.valueOf(destination).matches(pattern_number)
+				|| !String.valueOf(weight).matches(pattern_number)) {
+			ShowMessage("Dòng " + linenumber + ": Dữ liệu phải là số");
+			return false;
+		} else {
+			s = Integer.valueOf(source);
+			d = Integer.valueOf(destination);
+			w = Integer.valueOf(weight);
+		}
+		if (s == d) {
 			ShowMessage("Dòng " + linenumber + ": Nguồn và đich không được trùng nhau");
 			return false;
 		}
-		if (source < 0 || source >= sl || destination < 0 || destination >= sl) {
+		if (s < 0 || s >= sl || d < 0 || d >= sl) {
 			ShowMessage("Dòng " + linenumber + ": Nút nguồn và đích từ 0 đến " + (sl - 1));
 			return false;
 		}
-		if (weight == 0) {
+		if (w == 0) {
 			ShowMessage("Trọng số khác 0");
 			return false;
 		}
@@ -81,14 +97,20 @@ public class InitData {
 			}
 			int linenumber = 1;
 			while (sc.hasNextLine()) {
-				String t[] = sc.nextLine().split(" ");
+				String line = sc.nextLine();
+				if (line.matches(patternStruct) == false) {
+					ShowMessage("Sai cấu trúc dòng");
+					return false;
 
-				int soucre = Integer.parseInt(t[0]);
-				int destination = Integer.parseInt(t[1]);
-				int weight = Integer.parseInt(t[2]);
+				}
+				String t[] = line.split(" ");
+
+				String soucre = t[0];
+				String destination = t[1];
+				String weight = t[2];
 
 				if (check(linenumber, soucre, destination, weight)) {
-					addLaneTmp(Integer.parseInt(t[0]), Integer.parseInt(t[1]), Integer.parseInt(t[2]));
+					addLaneTmp(Integer.parseInt(soucre), Integer.parseInt(destination), Integer.parseInt(weight));
 					linenumber++;
 				} else {
 					flag = 0;

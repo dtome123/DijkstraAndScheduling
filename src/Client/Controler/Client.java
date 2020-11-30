@@ -17,9 +17,10 @@ import java.util.StringTokenizer;
 
 import javax.swing.JOptionPane;
 
-import Server.Server;
-import Server.DAO.Edge;
-import Server.DAO.Vertex;
+import Client.DAO.Edge;
+import Client.DAO.Vertex;
+
+
 
 public class Client {
 	private static Socket socket = null;
@@ -30,7 +31,7 @@ public class Client {
 	private static String key = "DIJ";
 	
 	static boolean isConnected;
-	static String address = "localhost";
+	static String address = "192.168.31.59";
 	static int port = 1234;
 
 	public Client() {
@@ -53,6 +54,7 @@ public class Client {
 			return;
 		} catch (IOException e) {
 			isConnected =false;
+			return;
 		}
 		isConnected=  true;
 		

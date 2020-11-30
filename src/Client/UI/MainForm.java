@@ -2,6 +2,8 @@ package Client.UI;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -11,7 +13,9 @@ import Client.Controler.Client;
 
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JButton;
 
 public class MainForm extends JFrame {
 
@@ -45,22 +49,29 @@ public class MainForm extends JFrame {
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
-		
+
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		contentPane.add(tabbedPane, BorderLayout.CENTER);
-		
-		
-		
-		DijktraForm dijFrame =new  DijktraForm();
+
+		DijktraForm dijFrame = new DijktraForm();
 		tabbedPane.addTab("Tìm đường đi", null, dijFrame, null);
-		
+
 		JInternalFrame internalFrame_1 = new JInternalFrame("New JInternalFrame");
 		CPUSchedulingForm cpuFrame = new CPUSchedulingForm();
 		tabbedPane.addTab("Lập lịch", null, cpuFrame, null);
 		internalFrame_1.setVisible(true);
-		
-		
+
 		JInternalFrame inframeDij = new JInternalFrame("DijForm");
-		
+		this.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+
+				Client.close();
+				System.exit(0);
+
+			}
+
+		});
 	}
+
 }
