@@ -77,7 +77,7 @@ public class DijktraForm extends JInternalFrame  {
 	DefaultComboBoxModel<Vertex> verDestinaion = new DefaultComboBoxModel<Vertex>();
 
 	// attribute
-	private boolean flag =true;//connect được server
+	private boolean flag =true;//data hợp lệ
 	// data của vertexs và edges
 	private InitData data = new InitData();
 	//vẽ 
@@ -160,19 +160,29 @@ public class DijktraForm extends JInternalFrame  {
 		}
 		else {
 			flag=false;
-			return;
 		}
+		
 		
 		if (Client.isConnected()) {
 			//Client.init(data, true);
-			try {
-				Client.resetData(data, true);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				JOptionPane.showMessageDialog(null, "Không khởi tạo dữ liệu được");
+			if(flag==true)//du liệu file đúng
+			{
+				try {
+					Client.resetData(data, true);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					JOptionPane.showMessageDialog(null, "Không khởi tạo dữ liệu được");
+				}
+				newUI();
 			}
-			newUI();
+			else {
+				rbtnDdirectional.setEnabled(false);
+				rbtnScalar.setEnabled(false);
+				btnFindPath.setEnabled(false);
+				btnImportData.setEnabled(false);
+			}
+			
 		} else {
 			rbtnDdirectional.setEnabled(false);
 			rbtnScalar.setEnabled(false);
@@ -195,7 +205,7 @@ public class DijktraForm extends JInternalFrame  {
 
 		panel_1 = new JPanel();
 		panel_1.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-		if (data.getVertexs().size() > 0)
+		if (flag==true)
 			panel_1 = paneGraph;
 		panel_1.setBounds(202, 70, 734, 589);
 		contentPane.add(panel_1);
@@ -362,7 +372,9 @@ public class DijktraForm extends JInternalFrame  {
 				paneGraph.repaint();
 				createTableData();
 				newUI();
+				fileChooser.getSelectedFile().getPath();
 			}
+			
 
 		}
 	}

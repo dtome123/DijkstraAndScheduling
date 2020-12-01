@@ -16,9 +16,15 @@ import Server.DAO.Process;
 
 public class SchedulingAlgorithm {
 	private String data;
+	private int quantime;
 	
-	
-    public String getData() {
+    public int getQuantime() {
+		return quantime;
+	}
+	public void setQuantime(int quantime) {
+		this.quantime = quantime;
+	}
+	public String getData() {
 		return data;
 	}
 	public void setData(String data) {
@@ -71,27 +77,27 @@ public class SchedulingAlgorithm {
          return arrProcess;
     }
     
-    public int InitDataQuanTime() throws FileNotFoundException, ParseException {
-//        try {
-//            File file = new File(path);
-//            FileReader fr = new FileReader(file);
-//            BufferedReader br = new BufferedReader(fr);
-//            String line;
-//            while ((line = br.readLine()) != null){
-//              data = data + line;
-//            }
-//            fr.close();
-//            br.close();
-//           } catch (IOException ex) {
-//             System.out.println("Đã xảy ra lỗi khi đọc dữ liệu từ file: "+ex);
-//         }
-
-        JSONParser Parser = new JSONParser();
-        JSONObject objectJson = (JSONObject) Parser.parse(data);
-        System.out.println("Quantime: " + objectJson.get("quantime"));
-        
-        return S2I(objectJson.get("quantime").toString());
-    }
+//    public int InitDataQuanTime() throws FileNotFoundException, ParseException {
+////        try {
+////            File file = new File(path);
+////            FileReader fr = new FileReader(file);
+////            BufferedReader br = new BufferedReader(fr);
+////            String line;
+////            while ((line = br.readLine()) != null){
+////              data = data + line;
+////            }
+////            fr.close();
+////            br.close();
+////           } catch (IOException ex) {
+////             System.out.println("Đã xảy ra lỗi khi đọc dữ liệu từ file: "+ex);
+////         }
+//
+//        JSONParser Parser = new JSONParser();
+//        JSONObject objectJson = (JSONObject) Parser.parse(data);
+//        System.out.println("Quantime: " + objectJson.get("quantime"));
+//        
+//        return S2I(objectJson.get("quantime").toString());
+//    }
     
     private String getStringResult(Process[] arrProcesses) {
     	String result ="";
@@ -289,7 +295,7 @@ public class SchedulingAlgorithm {
     
     public String drawRR() throws FileNotFoundException, ParseException {
         Process[] arrProcesses = InitDataProcesses();
-        int quantime = InitDataQuanTime();
+        int quantime = this.quantime;
         
         int rem_time[] = new int[arrProcesses.length];
 

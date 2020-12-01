@@ -89,7 +89,13 @@ public class InitData {
 		Scanner sc;
 		try {
 			sc = new Scanner(file);
-			sl = Integer.parseInt(sc.nextLine());
+			try {
+				sl = Integer.parseInt(sc.nextLine());
+			}
+			catch (Exception e) {
+				ShowMessage("Số lượng nút khởi tạo phải là số");
+				return false;
+			}
 
 			for (int i = 0; i < sl; i++) {
 				Vertex location = new Vertex(i + "");
@@ -149,8 +155,8 @@ public class InitData {
 
 	private void initCoordinate() {
 		String flagId = "";
-		vertexs.get(0).x = 100;
-		vertexs.get(0).y = 100;
+		vertexs.get(0).x = 50;
+		vertexs.get(0).y = 50;
 		int k = 0;
 		for (Vertex v : vertexs) {
 			isDestination.put(v, false);

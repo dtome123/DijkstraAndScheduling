@@ -31,7 +31,7 @@ public class Client {
 	private static String key = "DIJ";
 	
 	static boolean isConnected;
-	static String address = "192.168.31.59";
+	static String address = "localhost";
 	static int port = 1234;
 
 	public Client() {
@@ -139,7 +139,9 @@ public class Client {
 		send(type);
 		return recive(); 
 	}
-
+	public static void sendQuantime(int quantime) {
+		send(quantime+"");
+	}
 	public static void resetData(InitData data, boolean isDirectional) throws IOException {
 		send("resetDij");
 		String status = recive();

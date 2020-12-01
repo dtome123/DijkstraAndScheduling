@@ -21,6 +21,8 @@ import Client.Controler.Client;
 
 public class CPUscheduling {
 	
+	private static String TypeCurrent ="";
+	private static boolean flag=true;
 	public static boolean connect() {
 		boolean connect= Client.isConnected();
 		if(connect==false) {
@@ -49,12 +51,20 @@ public class CPUscheduling {
              System.out.println("Đã xảy ra lỗi khi đọc dữ liệu từ file: "+ex);
          }
         
-        Client.initScheduling(data);
+        
         
         JSONParser Parser = new JSONParser();
         JSONObject objectJson = (JSONObject) Parser.parse(data);
         System.out.println("Type: " + objectJson.get("type"));
-        
+        if((TypeCurrent.toLowerCase()).equals(objectJson.get("type").toString().toLowerCase())==false) {
+        	JOptionPane.showMessageDialog(null, "File không hợp lệ");
+        	flag=false;
+        }
+        else {
+        	Client.initScheduling(data);
+        	flag=true;
+        }
+        System.out.println("Flag "+flag);
         JSONArray jsonArray = (JSONArray) Parser.parse(objectJson.get("data").toString());
         Process arrProcess[] = new Process[jsonArray.size()];
         for (int i = 0; i < jsonArray.size(); i++) {
@@ -122,54 +132,69 @@ public class CPUscheduling {
         JSONParser Parser = new JSONParser();
         JSONObject objectJson = (JSONObject) Parser.parse(data);
         System.out.println("Quantime: " + objectJson.get("quantime"));
-        
         return S2I(objectJson.get("quantime").toString());
     }
     
     public static void drawFCSC(String TypeSheduling, String path) throws FileNotFoundException, ParseException {
-        Process[] arrProcesses = InitDataProcesses(path);
-    
+    	TypeCurrent=TypeSheduling;
+    	Process[] arrProcesses = InitDataProcesses(path);
+    	if(flag==false)
+    		return;
         String result=Client.schedule("FCFS");
         System.out.println(result);
         Process[]temp= new Process[arrProcesses.length]; 
         temp = parrseStringToArr(result,arrProcesses.length);
 //       
+        
         DrawGranttChart(TypeSheduling, temp, 0);
     }
     
       
     
     public static void drawSJF(String TypeSheduling, String path) throws FileNotFoundException, ParseException {
-        Process[] arrProcesses = InitDataProcesses(path);
+    	TypeCurrent=TypeSheduling;
+    	Process[] arrProcesses = InitDataProcesses(path);
+    	if(flag==false)
+    		return;
         String result=Client.schedule("SJF");
         System.out.println(result);
         Process[]temp= new Process[arrProcesses.length]; 
         temp = parrseStringToArr(result,arrProcesses.length);
 //       
+        
         DrawGranttChart(TypeSheduling, temp, 0);
+        
 
     }
     
     public static void drawPriority(String TypeSheduling, String path) throws FileNotFoundException, ParseException {
-        Process[] arrProcesses = InitDataProcesses(path);
+    	TypeCurrent=TypeSheduling;
+    	Process[] arrProcesses = InitDataProcesses(path);
+    	if(flag==false)
+    		return;
         String result=Client.schedule("Priority");
         System.out.println(result);
         Process[]temp= new Process[arrProcesses.length]; 
         temp = parrseStringToArr(result,arrProcesses.length);
 
+        
         DrawGranttChart(TypeSheduling, temp, 0);
         
     }
     
     public static void drawRR(String TypeSheduling, String path) throws FileNotFoundException, ParseException {
-        Process[] arrProcesses = InitDataProcesses(path);        
+    	TypeCurrent=TypeSheduling;
+    	Process[] arrProcesses = InitDataProcesses(path);
+    	if(flag==false)
+    		return;
+    	int quantime = InitDataQuanTime(path);
+    	Client.sendQuantime(quantime);
         String result=Client.schedule("RR");
         System.out.println(result);
         Process[]temp= new Process[arrProcesses.length]; 
         temp = parrseStringToArr(result,arrProcesses.length);
-
-        DrawGranttChart(TypeSheduling, temp, 0);
         
+        DrawGranttChart(TypeSheduling, temp, quantime);
     }
             
     public static void DrawGranttChart(String TypeSheduling, Process[] arrProcesses, int quantime) {

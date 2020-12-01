@@ -149,6 +149,8 @@ public class Worker implements Runnable{
 				}
 				if(command.equals("RR"))
 				{
+					int quantime = Integer.valueOf(recive());
+					schedule.setQuantime(quantime);
 					try {
 						send(schedule.drawRR());
 					} catch (FileNotFoundException | ParseException e) {
