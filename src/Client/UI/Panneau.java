@@ -3,6 +3,7 @@ package Client.UI;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.xml.ws.handler.MessageContext;
 
 import Client.Controler.InitData;
@@ -133,13 +134,17 @@ public class Panneau extends JPanel {
 					
 
 					// Modify the position of the node...
-					Rectangle bounds = dragged.getBounds();
-					bounds.setLocation(to);
-					dragged.setFrame(bounds);
-//                    System.out.println("Drag:id"+vertexCurrent.getId());
-					vertexToNode.put(vertexCurrent, dragged);
-					nodeToVertex.put(dragged, vertexCurrent);
-					repaint();
+					System.out.println("x: "+to.x +"\ny: "+to.y+"\n");
+					if( to.x>0 && to.x<775  && to.y > 0 && to.y<502) {
+						Rectangle bounds = dragged.getBounds();
+						bounds.setLocation(to);
+						dragged.setFrame(bounds);
+//		                    System.out.println("Drag:id"+vertexCurrent.getId());
+						vertexToNode.put(vertexCurrent, dragged);
+						nodeToVertex.put(dragged, vertexCurrent);
+						repaint();
+					}
+					
 
 				}
 

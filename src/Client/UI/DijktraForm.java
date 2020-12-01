@@ -16,6 +16,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Scrollbar;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -206,9 +207,12 @@ public class DijktraForm extends JInternalFrame  {
 		panel_1 = new JPanel();
 		panel_1.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 		if (flag==true)
-			panel_1 = paneGraph;
-		panel_1.setBounds(202, 70, 734, 589);
+			panel_1=paneGraph;
+		panel_1.setBounds(202, 70, 798, 531);
+		
 		contentPane.add(panel_1);
+		
+		
 
 		JPanel panel_2 = new JPanel();
 		panel_2.setBackground(Color.WHITE);
@@ -340,6 +344,11 @@ public class DijktraForm extends JInternalFrame  {
 		});
 		btnImportData.setBounds(10, 111, 139, 23);
 		contentPane.add(btnImportData);
+		
+//		JScrollPane scrollPane = new JScrollPane();
+//		scrollPane.setBounds(243, 70, 740, 530);
+//		scrollPane.add(paneGraph);
+//		contentPane.add(scrollPane);
 
 		Icon icon = new ImageIcon("src//Image//close_window_48px.png");
 		createTableData();

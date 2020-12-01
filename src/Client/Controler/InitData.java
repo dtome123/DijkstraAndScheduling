@@ -182,6 +182,11 @@ public class InitData {
 			}
 			des.x = sou.x + k;
 			des.y = sou.y + 100 + k + 10;
+			if(des.y>502) {
+				des.y=502;
+				des.x += sou.x + k;
+				k+=50;
+			}
 			flagId = sou.getId();
 
 		}

@@ -23,6 +23,8 @@ public class CPUscheduling {
 	
 	private static String TypeCurrent ="";
 	private static boolean flag=true;
+	public static String result ="";
+
 	public static boolean connect() {
 		boolean connect= Client.isConnected();
 		if(connect==false) {
@@ -35,6 +37,12 @@ public class CPUscheduling {
     public static int S2I(String str) {
         return Integer.parseInt(str);
     } 
+    public static void setStringResult(Process[] arrProcesses) {
+    	result += "Process\t\tAT\t\tBT\t\tCT\t\tTAT\t\tWT\t\tPriority\t\n";
+        for(int i = 0; i < arrProcesses.length; i++) {
+        	result +=arrProcesses[i].getPid()+"\t|\t" + arrProcesses[i].getArrTime()+ "\t|\t" + arrProcesses[i].getBurtTime() + "\t|\t" + arrProcesses[i].getCompTime() + "\t|\t" + arrProcesses[i].getTurnArrTime() + "\t|\t" + arrProcesses[i].getWaitingTime() + "\t|\t" + arrProcesses[i].getPriority()+"\t|\n";
+        }
+    }
     public static Process[] InitDataProcesses(String path) throws FileNotFoundException, ParseException {
         String data = "";
         try {
@@ -136,10 +144,13 @@ public class CPUscheduling {
     }
     
     public static void drawFCSC(String TypeSheduling, String path) throws FileNotFoundException, ParseException {
+    	result="";
     	TypeCurrent=TypeSheduling;
     	Process[] arrProcesses = InitDataProcesses(path);
     	if(flag==false)
+    	{
     		return;
+    	}
         String result=Client.schedule("FCFS");
         System.out.println(result);
         Process[]temp= new Process[arrProcesses.length]; 
@@ -147,11 +158,13 @@ public class CPUscheduling {
 //       
         
         DrawGranttChart(TypeSheduling, temp, 0);
+        setStringResult(temp);
     }
     
       
     
     public static void drawSJF(String TypeSheduling, String path) throws FileNotFoundException, ParseException {
+    	result="";
     	TypeCurrent=TypeSheduling;
     	Process[] arrProcesses = InitDataProcesses(path);
     	if(flag==false)
@@ -163,11 +176,13 @@ public class CPUscheduling {
 //       
         
         DrawGranttChart(TypeSheduling, temp, 0);
+        setStringResult(temp);
         
 
     }
     
     public static void drawPriority(String TypeSheduling, String path) throws FileNotFoundException, ParseException {
+    	result="";
     	TypeCurrent=TypeSheduling;
     	Process[] arrProcesses = InitDataProcesses(path);
     	if(flag==false)
@@ -179,10 +194,12 @@ public class CPUscheduling {
 
         
         DrawGranttChart(TypeSheduling, temp, 0);
+        setStringResult(temp);
         
     }
     
     public static void drawRR(String TypeSheduling, String path) throws FileNotFoundException, ParseException {
+    	result="";
     	TypeCurrent=TypeSheduling;
     	Process[] arrProcesses = InitDataProcesses(path);
     	if(flag==false)
@@ -195,6 +212,7 @@ public class CPUscheduling {
         temp = parrseStringToArr(result,arrProcesses.length);
         
         DrawGranttChart(TypeSheduling, temp, quantime);
+        setStringResult(temp);
     }
             
     public static void DrawGranttChart(String TypeSheduling, Process[] arrProcesses, int quantime) {
