@@ -11,6 +11,7 @@ public class ExecuteDijkstra {
 
     private List<Vertex> nodes=new ArrayList<Vertex>();
     private List<Edge> edges= new ArrayList<Edge>();
+    public int chiphi=0;
     public ExecuteDijkstra() {
     	
     }
@@ -40,14 +41,16 @@ public class ExecuteDijkstra {
     }
     public LinkedList<Vertex> Execute(int source, int destination) {
         
+    	chiphi=0;
         // Lets check from location Loc_1 to Loc_10
         Graph graph = new Graph(nodes, edges);
         DijkstraAlgorithm dijkstra = new DijkstraAlgorithm(graph);
         dijkstra.execute(nodes.get(source));
         LinkedList<Vertex> path = dijkstra.getPath(nodes.get(destination));
-//        for (Vertex vertex : path) {
-//            System.out.println(vertex);
-//        }
+
+        for(int i=0;i<path.size()-1;i++) {
+        	chiphi +=dijkstra.getDistance(path.get(i), path.get(i+1));
+        }
         return path;
 
     }

@@ -33,7 +33,15 @@ public class Client {
 	static boolean isConnected;
 	static String address = "localhost";
 	static int port = 1234;
+	private static int chiphi =0;
 
+	
+	public static int getChiphi() {
+		return chiphi;
+	}
+	public static void setChiphi(int chiphi) {
+		Client.chiphi = chiphi;
+	}
 	public Client() {
 
 	}
@@ -140,6 +148,7 @@ public class Client {
 		return recive(); 
 	}
 	public static void sendQuantime(int quantime) {
+		send("quantime");
 		send(quantime+"");
 	}
 	public static void resetData(InitData data, boolean isDirectional) throws IOException {
@@ -153,19 +162,23 @@ public class Client {
 	}
 
 	public static LinkedList<String> findPath(int source, int destination) throws IOException {
+		chiphi=0;
 		send("find;" + source + ";" + destination);
 		String result = recive();
+		chiphi = Integer.valueOf(recive());
 		StringTokenizer st = new StringTokenizer(result, " ", false);
 		LinkedList<String> tmp = new LinkedList<String>();
 		while (st.hasMoreTokens()) {
 			tmp.add(st.nextToken());
 		}
+		
 		return tmp;
 	}
 	
 	public static void close() {
 		try {
-			send("close");
+			if(isConnected==true)
+				send("close");
 			in.close();
 			out.close();
 			socket.close();

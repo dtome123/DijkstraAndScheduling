@@ -203,6 +203,7 @@ public class Panneau extends JPanel {
 			g2d.setPaint(Color.red);
 			Vertex sou = vertexs.get(Integer.valueOf(path.get(i - 1)));
 			Vertex des = vertexs.get(Integer.valueOf(path.get(i)));
+			
 			Ellipse2D node_begin = vertexToNode.get(sou);
 			Ellipse2D node_end = vertexToNode.get(des);
 			Point from = node_begin.getBounds().getLocation();

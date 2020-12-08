@@ -20,6 +20,7 @@ public class DijkstraAlgorithm {
     private Set<Vertex> unSettledNodes;
     private Map<Vertex, Vertex> predecessors;
     private Map<Vertex, Integer> distance;
+    public int chiphi=0;
 
     public DijkstraAlgorithm(Graph graph) {
         // create a copy of the array so that we can operate on this array
@@ -45,10 +46,8 @@ public class DijkstraAlgorithm {
     private void findMinimalDistances(Vertex node) {
         List<Vertex> adjacentNodes = getNeighbors(node);
         for (Vertex target : adjacentNodes) {
-            if (getShortestDistance(target) > getShortestDistance(node)
-                    + getDistance(node, target)) {
-                distance.put(target, getShortestDistance(node)
-                        + getDistance(node, target));
+            if (getShortestDistance(target) > getShortestDistance(node)+ getDistance(node, target)) {
+                distance.put(target, getShortestDistance(node)+ getDistance(node, target));
                 predecessors.put(target, node);
                 unSettledNodes.add(target);
             }
@@ -56,7 +55,7 @@ public class DijkstraAlgorithm {
 
     }
 
-    private int getDistance(Vertex node, Vertex target) {
+    public int getDistance(Vertex node, Vertex target) {
         for (Edge edge : edges) {
             if (edge.getSource().equals(node)
                     && edge.getDestination().equals(target)) {

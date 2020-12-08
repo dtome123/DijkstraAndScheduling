@@ -72,6 +72,7 @@ public class DijktraForm extends JInternalFrame  {
 	private JRadioButton rbtnDdirectional = new JRadioButton("Đồ thị có hướng");
 	private JRadioButton rbtnScalar = new JRadioButton("Đồ thị vô hướng");
 	private JTextArea txtaResult = new JTextArea();
+	private JTextField txtCP  = new JTextField();
 	private JFileChooser chooser;
 	ButtonGroup group = new ButtonGroup();
 	DefaultComboBoxModel<Vertex> verSource = new DefaultComboBoxModel<Vertex>();
@@ -108,6 +109,7 @@ public class DijktraForm extends JInternalFrame  {
 	 */
 	String[] columns = new String[] { "Đỉnh đầu", "Đỉnh cuối", "Trọng số" };
 	DefaultTableModel model = new DefaultTableModel(null, columns);
+	
 
 	//dữ liệu của file text 
 	//so dinh
@@ -266,8 +268,19 @@ public class DijktraForm extends JInternalFrame  {
 			}
 		});
 		btnExportImage.setFont(new Font("Tahoma", Font.PLAIN, 12));
-		btnExportImage.setBounds(26, 434, 142, 30);
+		btnExportImage.setBounds(26, 490, 142, 30);
 		panel_2.add(btnExportImage);
+		
+		JLabel lbChiPhi = new JLabel("Chi phí");
+		lbChiPhi.setFont(new Font("Tahoma", Font.BOLD, 15));
+		lbChiPhi.setBounds(26, 422, 76, 30);
+		panel_2.add(lbChiPhi);
+		
+		
+		txtCP.setEditable(false);
+		txtCP.setBounds(97, 429, 86, 20);
+		panel_2.add(txtCP);
+		txtCP.setColumns(10);
 
 		tableData = new JTable();
 		contentPane.add(tableData, BorderLayout.CENTER);
@@ -434,6 +447,7 @@ public class DijktraForm extends JInternalFrame  {
 
 		// ghi ket qua vao textarea result
 		String result = "";
+		
 
 		int d = 0;// đếm để xuống dòng cho kết quả
 		for (String i : temp) {
@@ -449,6 +463,7 @@ public class DijktraForm extends JInternalFrame  {
 		result = result.replace(" ", " => ");
 
 		txtaResult.setText(result);
+		txtCP.setText(Client.getChiphi()+"");
 
 		paneGraph.setPath(temp);
 		paneGraph.repaint();

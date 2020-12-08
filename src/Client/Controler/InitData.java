@@ -3,12 +3,15 @@ package Client.Controler;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
 import javax.swing.JOptionPane;
+import javax.xml.transform.Source;
 
 import Client.DAO.Edge;
 import Client.DAO.Vertex;
@@ -81,6 +84,17 @@ public class InitData {
 
 		return true;
 	}
+	
+	public boolean isTE(String sou , String des) {
+		if (tmpedges ==null)
+			return false;
+		for(Edge i :tmpedges) {
+			if(sou.equals(i.getSource().getId())&& des.equals(i.getDestination().getId())) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	public boolean readFile(File file) {
 		tmpvertexs = new ArrayList<Vertex>();
@@ -101,7 +115,7 @@ public class InitData {
 				Vertex location = new Vertex(i + "");
 				tmpvertexs.add(location);
 			}
-			int linenumber = 1;
+			int linenumber = 2;
 			while (sc.hasNextLine()) {
 				String line = sc.nextLine();
 				if (line.matches(patternStruct) == false) {
@@ -109,12 +123,18 @@ public class InitData {
 					return false;
 
 				}
+				
 				String t[] = line.split(" ");
 
 				String soucre = t[0];
 				String destination = t[1];
 				String weight = t[2];
 
+				if(isTE(soucre, destination)&& linenumber>1) {
+					ShowMessage("Dòng "+linenumber+" bị lặp");
+					return false;
+				}
+				
 				if (check(linenumber, soucre, destination, weight)) {
 					addLaneTmp(Integer.parseInt(soucre), Integer.parseInt(destination), Integer.parseInt(weight));
 					linenumber++;
@@ -153,43 +173,95 @@ public class InitData {
 		tmpedges.clear();
 	}
 
+	private boolean isT(Vertex v) {
+		for (Vertex i : vertexs) {
+			if(i.x==v.x && i.y==v.y) {
+				return true;
+			}
+		}
+		return false;
+	}
 	private void initCoordinate() {
+		
 		String flagId = "";
 		vertexs.get(0).x = 50;
 		vertexs.get(0).y = 50;
 		int k = 0;
+		int w = 10;
+		int d = 5;
+		Hashtable<Vertex, Boolean> flag = new Hashtable<Vertex, Boolean>();
+		Hashtable<Vertex, Boolean> wasSource = new Hashtable<Vertex, Boolean>();
 		for (Vertex v : vertexs) {
 			isDestination.put(v, false);
+			wasSource.put(v, false);
+			flag.put(v,false);
 		}
+		Collections.sort(edges);
 		for (Edge e : edges) {
 			Vertex des = e.getDestination();
+			
 			isDestination.put(des, true);
+			
+			System.out.println(e.getSource().getId()+" "+e.getDestination().getId()+" "+ e.getWeight());
 		}
+		
 		int xSou = 100;
-		int ySou = 100;
+		int ySou = 50;
 		for (Edge e : edges) {
 			Vertex sou = e.getSource();
 			Vertex des = e.getDestination();
+
+			if(wasSource.get(des))
+				continue;
 			if (isDestination.get(sou) == false) {
 				sou.x = xSou;
 				sou.y = ySou;
 				xSou = xSou + 100;
 			}
 			if (flagId.equals(sou.getId())) {
-				k += 50;
+				k += 30;
 			} else {
 				k = 0;
 			}
-			des.x = sou.x + k;
-			des.y = sou.y + 100 + k + 10;
+			des.x = sou.x + k+20;
+			des.y = sou.y + 100 + k + 100;
 			if(des.y>502) {
 				des.y=502;
-				des.x += sou.x + k;
+				des.x += w;
 				k+=50;
+				w+=100;
+			}
+			if(des.x>775) {
+				des.x=755;
+			}
+			if(des.y<0) {
+				des.y=50;
 			}
 			flagId = sou.getId();
-
+			wasSource.put(e.getSource(), true);
 		}
+		for (Edge e : edges) {
+			Vertex des = e.getDestination();
+			if(isT(des)&& flag.get(des)==false) {
+				des.y -= d+30;
+				des.x += d+30;
+				d+=5;
+				flag.put(des,true);
+			}
+			if(des.y>502) {
+				des.y=502;
+				des.x += w;
+				k+=50;
+				w+=100;
+			}
+			if(des.y<0) {
+				des.y=50;
+			}
+			if(des.x>775) {
+				des.x=755;
+			}
+		}
+		
 	}
 
 	private void addLaneTmp(int sourceLocNo, int destLocNo, int duration) {

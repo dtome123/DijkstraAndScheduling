@@ -2,7 +2,7 @@ package Client.DAO;
 
 import java.io.Serializable;
 
-public class Edge implements Serializable{
+public class Edge implements Comparable<Edge>{
 
 	
     private final Vertex source;
@@ -31,5 +31,9 @@ public class Edge implements Serializable{
     @Override
     public String toString() {
         return source + " " + destination;
+    }
+    @Override
+    public int compareTo(Edge o) {
+        return Integer.valueOf(this.getSource().getId()).compareTo(Integer.valueOf(o.getSource().getId()));
     }
 }

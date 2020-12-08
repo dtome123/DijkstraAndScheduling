@@ -199,13 +199,13 @@ public class CPUscheduling {
     }
     
     public static void drawRR(String TypeSheduling, String path) throws FileNotFoundException, ParseException {
+    	int quantime = InitDataQuanTime(path);
+    	Client.sendQuantime(quantime);
     	result="";
     	TypeCurrent=TypeSheduling;
     	Process[] arrProcesses = InitDataProcesses(path);
     	if(flag==false)
     		return;
-    	int quantime = InitDataQuanTime(path);
-    	Client.sendQuantime(quantime);
         String result=Client.schedule("RR");
         System.out.println(result);
         Process[]temp= new Process[arrProcesses.length]; 

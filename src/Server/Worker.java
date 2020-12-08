@@ -147,10 +147,13 @@ public class Worker implements Runnable{
 						e.printStackTrace();
 					}
 				}
-				if(command.equals("RR"))
-				{
+				if(command.equals("quantime")) {
 					int quantime = Integer.valueOf(recive());
 					schedule.setQuantime(quantime);
+				}
+				if(command.equals("RR"))
+				{
+					
 					try {
 						send(schedule.drawRR());
 					} catch (FileNotFoundException | ParseException e) {
@@ -175,12 +178,14 @@ public class Worker implements Runnable{
 				}
 				if(command.matches(regexFind)) {
 					st = new StringTokenizer(command,";",false);
+					System.out.println(command);
 					st.nextToken();
 					int source = Integer.valueOf(st.nextToken());
 					int destination = Integer.valueOf(st.nextToken());
 					String result =getPath(source, destination);
 					System.out.println("find: "+result);
 					send(result);
+					send(chiphi());
 					continue;
 					
 				}
@@ -216,7 +221,9 @@ public class Worker implements Runnable{
 	        Edge lane = new Edge(vertexs.get(sourceLocNo), vertexs.get(destLocNo), duration );
 	        edges.add(lane);
 	    }
-		
+		private String chiphi () {
+			return ex.chiphi+"";
+		}
 	
 
 }

@@ -11,15 +11,13 @@ import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 
-import Client.UI.CPUscheduling;
-
 /**
  *
  * @author THANH
  */
 public class CPUSchedulingForm extends JInternalFrame {
 
-	public String getLink;
+    public String getLink;
     public void loadOptionCPU() {
         cbAlgorithm.addItem("FCFS");
         cbAlgorithm.addItem("SJF");
@@ -48,6 +46,7 @@ public class CPUSchedulingForm extends JInternalFrame {
         jButton4 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(0, 255, 204));
@@ -76,16 +75,25 @@ public class CPUSchedulingForm extends JInternalFrame {
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
 
+        jButton1.setText("Tạo file");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(btnFile, javax.swing.GroupLayout.PREFERRED_SIZE, 106, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(1, 1, 1)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnFile, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lbFile)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 97, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 118, Short.MAX_VALUE)
                 .addComponent(cbAlgorithm, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton4)
@@ -100,9 +108,11 @@ public class CPUSchedulingForm extends JInternalFrame {
                     .addComponent(btnFile)
                     .addComponent(lbFile)
                     .addComponent(cbAlgorithm, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton4))
+                    .addComponent(jButton4)
+                    .addComponent(jButton1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 22, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 266, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 277, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
@@ -132,7 +142,7 @@ public class CPUSchedulingForm extends JInternalFrame {
         );
 
         pack();
-        //setLocationRelativeTo(null);
+       // setLocationRelativeTo(null);
     }// </editor-fold>                        
 
     private void btnFileActionPerformed(java.awt.event.ActionEvent evt) {                                        
@@ -159,6 +169,7 @@ public class CPUSchedulingForm extends JInternalFrame {
                     JOptionPane.showMessageDialog(this, "Đã huỷ." );
                 }
            }
+         
     }                                       
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {                                         
@@ -171,7 +182,6 @@ public class CPUSchedulingForm extends JInternalFrame {
             {
                 case 0:
                     CPUscheduling.drawFCSC(cbAlgorithm.getSelectedItem().toString(), absPath);
-                    
                     break;
                 case 1:
                     CPUscheduling.drawSJF(cbAlgorithm.getSelectedItem().toString(), absPath);
@@ -192,6 +202,12 @@ public class CPUSchedulingForm extends JInternalFrame {
             System.out.println("Lỗi liên quan đến giá trị đầu vào, hãy kiểm tra: " + e);
             System.out.println(e);
         }   
+    }                                        
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+         CreateJson cr = new CreateJson();
+         cr.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+         cr.setVisible(true);
     }                                        
 
     /**
@@ -233,6 +249,7 @@ public class CPUSchedulingForm extends JInternalFrame {
     // Variables declaration - do not modify                     
     private javax.swing.JButton btnFile;
     private javax.swing.JComboBox<String> cbAlgorithm;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel9;

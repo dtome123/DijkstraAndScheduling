@@ -20,6 +20,12 @@ public class Process {
         this.priority = priority;
     }
 
+    public Process(int pid, int arrTime, int burtTime, int priority) {
+        this.pid = pid;
+        this.arrTime = arrTime;
+        this.burtTime = burtTime;
+        this.priority = priority;
+    }
     public int getPid() {
         return pid;
     }
